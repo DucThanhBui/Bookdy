@@ -25,12 +25,19 @@
         <action
             android:id="@+id/action_navigation_user_to_navigation_changepwd"
             app:destination="@id/navigation_changepwd" />
+        <action
+            android:id="@+id/action_navigation_user_to_navigation_login"
+            app:destination="@id/navigation_login" />
     </fragment>
     <fragment
         android:id="@+id/navigation_changepwd"
         android:name="com.example.bookdy.login.ChangePasswordFragment"
         android:label="@string/title_changepwd"
-        tools:layout="@layout/fragment_change_password" />
+        tools:layout="@layout/fragment_change_password" >
+        <action
+            android:id="@+id/action_navigation_changepwd_to_navigation_user"
+            app:destination="@id/navigation_user" />
+    </fragment>
     <fragment
         android:id="@+id/navigation_register"
         android:name="com.example.bookdy.login.RegisterFragment"

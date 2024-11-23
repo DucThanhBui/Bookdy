@@ -20,12 +20,6 @@ import com.example.bookdy.data.model.Book
 import com.example.bookdy.utils.tryOrLog
 import timber.log.Timber
 
-/**
- * The [Bookshelf] supports two different processes:
- * - directly _adding_ the url to a remote asset or an asset from shared storage to the database
- * - _importing_ an asset, that is downloading or copying the publication the asset points to to the app storage
- *   before adding it to the database
- */
 class Bookshelf(
     private val bookRepository: BookRepository,
     private val coverStorage: CoverStorage,
@@ -144,6 +138,11 @@ class Bookshelf(
             }
 
         return Try.success(Unit)
+    }
+
+    suspend fun markFavorite(book: Book, favType: Int) {
+        val idf = book.identifier
+        bookRepository.markFavprite(idf, favType)
     }
 
     suspend fun deleteBook(book: Book) {

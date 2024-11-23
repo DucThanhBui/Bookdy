@@ -25,7 +25,11 @@ data class Book(
     @ColumnInfo(name = MEDIA_TYPE)
     val rawMediaType: String,
     @ColumnInfo(name = COVER)
-    val cover: String
+    val cover: String,
+    @ColumnInfo(name = SYNC)
+    val isSync: Int? = null,
+    @ColumnInfo(name = FAVORITE)
+    val isFavorite: Int? = null
 ) {
 
     constructor(
@@ -36,7 +40,7 @@ data class Book(
         identifier: String,
         progression: String? = null,
         mediaType: MediaType,
-        cover: String
+        cover: String,
     ) : this(
         creation = creation,
         href = href,
@@ -45,7 +49,9 @@ data class Book(
         identifier = identifier,
         progression = progression,
         rawMediaType = mediaType.toString(),
-        cover = cover
+        cover = cover,
+        isSync = 0,
+        isFavorite = 0
     )
 
     val url: AbsoluteUrl get() = AbsoluteUrl(href)!!
@@ -64,5 +70,7 @@ data class Book(
         const val PROGRESSION = "progression"
         const val MEDIA_TYPE = "media_type"
         const val COVER = "cover"
+        const val SYNC = "sync"
+        const val FAVORITE = "favorite"
     }
 }

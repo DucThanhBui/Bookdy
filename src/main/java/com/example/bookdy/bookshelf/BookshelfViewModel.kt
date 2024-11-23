@@ -2,8 +2,10 @@ package com.example.bookdy.bookshelf
 
 import android.app.Application
 import android.net.Uri
+import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.bookdy.R
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.launch
 import org.readium.r2.shared.util.AbsoluteUrl
@@ -20,11 +22,25 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
 
     val channel = EventChannel(Channel<Event>(Channel.BUFFERED), viewModelScope)
     val books = app.bookRepository.books()
+    val favoriteBooks = app.bookRepository.favoriteBooks()
+    var networkStatus = false
 
     fun deletePublication(book: Book) =
         viewModelScope.launch {
             app.bookshelf.deleteBook(book)
         }
+
+    fun markFavorite(book: Book, favType: Int) {
+        viewModelScope.launch {
+            app.bookshelf.markFavorite(book, favType)
+        }
+    }
+
+    fun showNetworkStatus() {
+        if (!networkStatus) {
+            Toast.makeText(getApplication(), app.applicationContext.getString(R.string.no_internet), Toast.LENGTH_SHORT).show()
+        }
+    }
 
     fun importPublicationFromStorage(uri: Uri) {
         app.bookshelf.importPublicationFromStorage(uri)

@@ -5,56 +5,72 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.Navigation
 import com.example.bookdy.R
+import com.example.bookdy.data.modeljson.User
+import com.example.bookdy.databinding.FragmentRegisterBinding
+import com.example.bookdy.network.BookApiService
+import com.example.bookdy.utils.NetworkListener
+import kotlinx.coroutines.launch
+import kotlin.math.log
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [RegisterFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class RegisterFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var _binding: FragmentRegisterBinding? = null
+    private val binding get() = _binding!!
+    private val loginViewModel: LoginViewModel by activityViewModels()
+    private val networkListener: NetworkListener by lazy { NetworkListener() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_register, container, false)
-    }
+        _binding = FragmentRegisterBinding.inflate(inflater, container, false)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RegisterFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RegisterFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                networkListener.checkNetworkAvailability(requireContext()).collect { status ->
+                    loginViewModel.networkStatus = status
                 }
             }
+        }
+
+        binding.buttonRegister.setOnClickListener {
+            if (loginViewModel.networkStatus) {
+                lifecycleScope.launch {
+                    val username = binding.editName.editText?.text.toString()
+                    val password = binding.editPassword.editText?.text.toString()
+                    if (username.isNotEmpty() && password.isNotEmpty()) {
+                        val user = User(username, password)
+                        registerUser(user)
+                    } else {
+                        Toast.makeText(requireContext(), resources.getString(R.string.input_require), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+                loginViewModel.showNetworkStatus(requireContext())
+            }
+        }
+
+        binding.buttonLogin.setOnClickListener {
+            Navigation.findNavController(requireView()).navigate(R.id.action_navigation_register_to_navigation_login)
+        }
+
+        return binding.root
     }
+
+    private suspend fun registerUser(user: User) {
+        val response = BookApiService.retrofitService.register(user)
+        if (response.status == 0) {
+            Toast.makeText(requireContext(), resources.getString(R.string.register_success), Toast.LENGTH_SHORT).show()
+        } else {
+            Toast.makeText(requireContext(), resources.getString(R.string.username_existed), Toast.LENGTH_SHORT).show()
+        }
+    }
+
 }

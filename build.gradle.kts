@@ -117,4 +117,5 @@ dependencies {
 
     // Gson
     implementation (libs.gson)
+    implementation(kotlin("script-runtime"))
 }

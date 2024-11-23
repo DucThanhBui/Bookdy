@@ -231,4 +231,23 @@
     <string name="title_user">User Profile</string>
     <string name="title_changepwd">Change Password</string>
     <string name="no_support_this_file">No supports this type.</string>
+    <string name="login_success">Login successfully</string>
+    <string name="login_failed">Invalid username or password</string>
+    <string name="input_require">Please input username or password</string>
+    <string name="register_success">Register successfully</string>
+    <string name="username_existed">Username already exists</string>
+    <string name="password_not_match">Password not match</string>
+    <string name="change_password_success">Change password successfully</string>
+    <string name="server_error">Server error</string>
+    <string name="cloud">Cloud storage</string>
+    <string name="cloud_storage">Cloud Storage</string>
+    <string name="change_language">Change language</string>
+    <string name="confirm_delete_fav_book_title">Delete Favorite Book</string>
+    <string name="confirm_delete_fav_book_text">Are you sure delete book from favorites?</string>
+    <string name="add_to_favorite">Add to favorite</string>
+    <string name="delete_book">Delete book</string>
+    <string name="no_internet">No Internet Connection</string>
+    <string name="dialog_title">Option</string>
+    <string name="upload">Upload</string>
+    <string name="upload_to_cloud">Upload to cloud</string>
 </resources>

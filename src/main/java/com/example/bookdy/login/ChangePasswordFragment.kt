@@ -5,56 +5,66 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import androidx.navigation.Navigation
 import com.example.bookdy.R
+import com.example.bookdy.databinding.FragmentChangePasswordBinding
+import com.example.bookdy.utils.NetworkListener
+import kotlinx.coroutines.launch
+import kotlin.math.log
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-/**
- * A simple [Fragment] subclass.
- * Use the [ChangePasswordFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class ChangePasswordFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-    }
+    private var _binding: FragmentChangePasswordBinding? = null
+    private val binding get() = _binding!!
+    private val loginViewModel: LoginViewModel by activityViewModels()
+    private val networkListener: NetworkListener by lazy { NetworkListener() }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_change_password, container, false)
-    }
+        _binding = FragmentChangePasswordBinding.inflate(inflater, container, false)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment ChangePasswordFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            ChangePasswordFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                networkListener.checkNetworkAvailability(requireContext()).collect { status ->
+                    loginViewModel.networkStatus = status
                 }
             }
+        }
+
+        binding.btConfirm.setOnClickListener {
+            val oldPassword = binding.oldPassword.editText?.text.toString()
+            val newPassword = binding.newPassword.editText?.text.toString()
+            val newPassword2 = binding.newPassword2.editText?.text.toString()
+
+            if (oldPassword.isNullOrEmpty() || newPassword.isNullOrEmpty() || newPassword2.isNullOrEmpty()) {
+                Toast.makeText(requireContext(), resources.getString(R.string.input_require), Toast.LENGTH_SHORT).show()
+            } else {
+                if (newPassword == newPassword2) {
+                    if (loginViewModel.networkStatus) {
+                        viewLifecycleOwner.lifecycleScope.launch {
+                            if (loginViewModel.doChangePassword(oldPassword, newPassword)) {
+                                Toast.makeText(requireContext(), resources.getString(R.string.change_password_success), Toast.LENGTH_SHORT).show()
+                                Navigation.findNavController(requireView()).navigate(R.id.action_navigation_changepwd_to_navigation_user)
+                            } else {
+                                Toast.makeText(requireContext(), resources.getString(R.string.server_error), Toast.LENGTH_SHORT).show()
+                            }
+                        }
+                    } else {
+                        loginViewModel.showNetworkStatus(requireContext())
+                    }
+                } else {
+                    Toast.makeText(requireContext(), resources.getString(R.string.password_not_match), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+
+        return binding.root
     }
 }

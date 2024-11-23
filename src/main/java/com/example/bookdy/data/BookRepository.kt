@@ -21,6 +21,7 @@ class BookRepository(
     private val booksDao: BooksDao
 ) {
     fun books(): Flow<List<Book>> = booksDao.getAllBooks()
+    fun favoriteBooks(): Flow<List<Book>> = booksDao.getAllFavoriteBooks()
 
     suspend fun get(idf: String) = booksDao.get(idf)
 
@@ -93,6 +94,10 @@ class BookRepository(
             cover = cover.path
         )
         return booksDao.insertBook(book)
+    }
+
+    suspend fun markFavprite(bookIdf: String, favType: Int) {
+        booksDao.markFavorite(bookIdf, favType)
     }
 
     suspend fun deleteBook(bookIdf: String) =

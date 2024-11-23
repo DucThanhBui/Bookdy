@@ -25,6 +25,9 @@ interface BooksDao {
     @Query("SELECT * FROM " + Book.TABLE_NAME + " ORDER BY " + Book.CREATION_DATE + "*1 desc")
     fun getAllBooks(): Flow<List<Book>>
 
+    @Query("SELECT * FROM " + Book.TABLE_NAME + " WHERE " + Book.FAVORITE + " = 1 ORDER BY " + Book.CREATION_DATE + "*1 desc")
+    fun getAllFavoriteBooks(): Flow<List<Book>>
+
     @Query("SELECT * FROM " + Bookmark.TABLE_NAME + " WHERE " + Bookmark.BOOK_IDF + " = :bookIdf")
     fun getBookmarksForBook(bookIdf: String): Flow<List<Bookmark>>
 
@@ -62,4 +65,9 @@ interface BooksDao {
         "UPDATE " + Book.TABLE_NAME + " SET " + Book.PROGRESSION + " = :locator WHERE " + Book.IDENTIFIER + "= :bookIdf"
     )
     suspend fun saveProgression(locator: String, bookIdf: String)
+
+    @Query(
+        "UPDATE " + Book.TABLE_NAME + " SET " + Book.FAVORITE + " = :favType WHERE " + Book.IDENTIFIER + "= :bookIdf"
+    )
+    suspend fun markFavorite(bookIdf: String, favType: Int)
 }

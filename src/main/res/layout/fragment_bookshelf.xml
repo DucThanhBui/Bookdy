@@ -12,7 +12,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-        tools:context="org.readium.r2.bookdy.bookshelf"
         tools:listitem="@layout/item_recycle_book" />
 
     <ProgressBar

@@ -21,8 +21,6 @@ import kotlinx.coroutines.launch
 import org.readium.r2.navigator.Decoration
 import org.readium.r2.navigator.HyperlinkNavigator
 import org.readium.r2.navigator.epub.EpubNavigatorFragment
-import org.readium.r2.navigator.image.ImageNavigatorFragment
-import org.readium.r2.navigator.pdf.PdfNavigatorFragment
 import org.readium.r2.shared.ExperimentalReadiumApi
 import org.readium.r2.shared.publication.Link
 import org.readium.r2.shared.publication.Locator
@@ -55,9 +53,7 @@ class ReaderViewModel(
     private val readerRepository: ReaderRepository,
     private val bookRepository: BookRepository
 ) : ViewModel(),
-    EpubNavigatorFragment.Listener,
-    ImageNavigatorFragment.Listener,
-    PdfNavigatorFragment.Listener {
+    EpubNavigatorFragment.Listener {
 
     val readerInitData =
         try {
@@ -154,8 +150,6 @@ class ReaderViewModel(
             locator = locator,
             style = style,
             extras = mapOf(
-                // We store the highlight's database ID in the extras map, for easy retrieval
-                // later. You can store arbitrary information in the map.
                 "id" to id
             )
         )
@@ -239,8 +233,6 @@ class ReaderViewModel(
         searchLocators.map {
             it.mapIndexed { index, locator ->
                 Decoration(
-                    // The index in the search result list is a suitable Decoration ID, as long as
-                    // we clear the search decorations between two searches.
                     id = index.toString(),
                     locator = locator,
                     style = Decoration.Style.Underline(tint = Color.RED)
@@ -257,7 +249,6 @@ class ReaderViewModel(
         SearchPagingSource(listener = PagingSourceListener())
     }
 
-    // Navigator.Listener
 
     override fun onResourceLoadFailed(href: Url, error: ReadError) {
         activityChannel.send(
@@ -265,7 +256,6 @@ class ReaderViewModel(
         )
     }
 
-    // HyperlinkNavigator.Listener
     override fun onExternalLinkActivated(url: AbsoluteUrl) {
     }
 

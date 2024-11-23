@@ -1,4 +1,4 @@
-package com.example.bookdy.opds
+package com.example.bookdy.utils
 
 import android.content.Context
 import android.util.TypedValue

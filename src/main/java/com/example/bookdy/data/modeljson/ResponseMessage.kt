@@ -5,9 +5,9 @@ import com.google.gson.annotations.SerializedName
 class ResponseMessage(
     @SerializedName("status")
     val status: Int,
-    @SerializedName("message")
+    @SerializedName("msg")
     val message: String,
-    @SerializedName("token")
+    @SerializedName("access_token")
     val token: String? = null
 ) {
 }

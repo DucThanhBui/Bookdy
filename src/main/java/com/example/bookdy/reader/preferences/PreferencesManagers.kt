@@ -36,7 +36,7 @@ import com.example.bookdy.utils.tryOrNull
 
 class PreferencesManager<P : Configurable.Preferences<P>> internal constructor(
     val preferences: StateFlow<P>,
-    @Suppress("Unused") // Keep the scope alive until the PreferencesManager is garbage collected
+    @Suppress("Unused")
     private val coroutineScope: CoroutineScope,
     private val editPreferences: suspend (P) -> Unit
 ) {
@@ -118,17 +118,6 @@ class EpubPreferencesManagerFactory(
     publicationPreferencesFilter = EpubPublicationPreferencesFilter,
     preferencesSerializer = EpubPreferencesSerializer(),
     emptyPreferences = EpubPreferences()
-)
-
-class PdfiumPreferencesManagerFactory(
-    dataStore: DataStore<Preferences>
-) : PreferencesManagerFactory<PdfiumPreferences>(
-    dataStore = dataStore,
-    klass = PdfiumPreferences::class,
-    sharedPreferencesFilter = PdfiumSharedPreferencesFilter,
-    publicationPreferencesFilter = PdfiumPublicationPreferencesFilter,
-    preferencesSerializer = PdfiumPreferencesSerializer(),
-    emptyPreferences = PdfiumPreferences()
 )
 
 class AndroidTtsPreferencesManagerFactory(

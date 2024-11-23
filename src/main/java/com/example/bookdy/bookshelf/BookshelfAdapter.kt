@@ -68,10 +68,7 @@ class BookshelfAdapter(
             oldItem: Book,
             newItem: Book
         ): Boolean {
-            return oldItem.title == newItem.title &&
-                oldItem.href == newItem.href &&
-                oldItem.author == newItem.author &&
-                oldItem.identifier == newItem.identifier
+            return oldItem.creation != newItem.creation
         }
     }
 }

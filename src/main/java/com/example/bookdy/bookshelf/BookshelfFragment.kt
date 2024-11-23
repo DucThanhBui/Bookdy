@@ -1,6 +1,5 @@
 package com.example.bookdy.bookshelf
 
-import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
@@ -20,11 +19,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import com.example.bookdy.Application
 import com.example.bookdy.R
-import com.example.bookdy.bookshelf.BookshelfViewModel
 import com.example.bookdy.data.model.Book
 import com.example.bookdy.databinding.FragmentBookshelfBinding
-import com.example.bookdy.opds.GridAutoFitLayoutManager
+import com.example.bookdy.utils.GridAutoFitLayoutManager
 import com.example.bookdy.reader.ReaderActivityContract
+import com.example.bookdy.utils.CustomDialog
+import com.example.bookdy.utils.NetworkListener
 import com.example.bookdy.utils.viewLifecycle
 
 class BookshelfFragment : Fragment() {
@@ -32,8 +32,8 @@ class BookshelfFragment : Fragment() {
     private val bookshelfViewModel: BookshelfViewModel by activityViewModels()
     private lateinit var bookshelfAdapter: BookshelfAdapter
     private lateinit var appStoragePickerLauncher: ActivityResultLauncher<String>
-    private lateinit var sharedStoragePickerLauncher: ActivityResultLauncher<Array<String>>
     private var binding: FragmentBookshelfBinding by viewLifecycle()
+    private val networkListener: NetworkListener by lazy { NetworkListener() }
 
     private val app: Application
         get() = requireContext().applicationContext as Application
@@ -44,6 +44,15 @@ class BookshelfFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         binding = FragmentBookshelfBinding.inflate(inflater, container, false)
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                networkListener.checkNetworkAvailability(requireContext()).collect { status ->
+                    bookshelfViewModel.networkStatus = status
+                    bookshelfViewModel.showNetworkStatus()
+                }
+            }
+        }
         return binding.root
     }
 
@@ -54,26 +63,17 @@ class BookshelfFragment : Fragment() {
 
         bookshelfAdapter = BookshelfAdapter(
             onBookClick = { book ->
-                book.identifier?.let {
+                book.identifier.let {
                     bookshelfViewModel.openPublication(it)
                 }
             },
-            onBookLongClick = { book -> confirmDeleteBook(book) }
+            onBookLongClick = { book -> showDialog(book) }
         )
 
         appStoragePickerLauncher =
             registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
                 uri?.let {
                     bookshelfViewModel.importPublicationFromStorage(it)
-                }
-            }
-
-        sharedStoragePickerLauncher =
-            registerForActivityResult(ActivityResultContracts.OpenDocument()) { uri: Uri? ->
-                uri?.let {
-                    val takeFlags: Int = Intent.FLAG_GRANT_WRITE_URI_PERMISSION
-                    requireContext().contentResolver.takePersistableUriPermission(uri, takeFlags)
-                    bookshelfViewModel.addPublicationFromStorage(it)
                 }
             }
 
@@ -97,22 +97,6 @@ class BookshelfFragment : Fragment() {
 
         binding.bookshelfAddBookFab.setOnClickListener {
             appStoragePickerLauncher.launch("*/*")
-//            var selected = 0
-//            MaterialAlertDialogBuilder(requireContext())
-//                .setTitle(getString(R.string.add_book))
-//                .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-//                    dialog.cancel()
-//                }
-//                .setPositiveButton(getString(R.string.ok)) { _, _ ->
-//                    when (selected) {
-//                        0 -> appStoragePickerLauncher.launch("*/*")
-//                        1 -> sharedStoragePickerLauncher.launch(arrayOf("*/*"))
-//                    }
-//                }
-//                .setSingleChoiceItems(R.array.documentSelectorArray, 0) { _, which ->
-//                    selected = which
-//                }
-//                .show()
         }
     }
 
@@ -145,21 +129,7 @@ class BookshelfFragment : Fragment() {
         }
     }
 
-    private fun deleteBook(book: Book) {
-        bookshelfViewModel.deletePublication(book)
-    }
-
-    private fun confirmDeleteBook(book: Book) {
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle(getString(R.string.confirm_delete_book_title))
-            .setMessage(getString(R.string.confirm_delete_book_text))
-            .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
-                dialog.cancel()
-            }
-            .setPositiveButton(getString(R.string.delete)) { dialog, _ ->
-                deleteBook(book)
-                dialog.dismiss()
-            }
-            .show()
+    private fun showDialog(book: Book) {
+        CustomDialog(bookshelfViewModel, book).show(parentFragmentManager, "CustomDialog")
     }
 }
