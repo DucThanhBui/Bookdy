@@ -48,7 +48,7 @@ data class Highlight(
     @ColumnInfo(name = TITLE, defaultValue = "NULL")
     var title: String? = null,
     @ColumnInfo(name = TOTAL_PROGRESSION, defaultValue = "0")
-    var totalProgression: String = "0.0",
+    var totalProgression: Double = 0.0,
     @ColumnInfo(name = LOCATIONS, defaultValue = "{}")
     var locations: Locator.Locations = Locator.Locations(),
     @ColumnInfo(name = TEXT, defaultValue = "{}")
@@ -69,7 +69,7 @@ data class Highlight(
             href = locator.href.toString(),
             type = locator.mediaType.toString(),
             title = locator.title,
-            totalProgression = locator.locations.totalProgression.toString() ?: "0.0",
+            totalProgression = locator.locations.totalProgression ?: 0.0,
             locations = locator.locations,
             text = locator.text,
             annotation = annotation
@@ -99,12 +99,6 @@ data class Highlight(
 }
 
 class HighlightConverters {
-//    @TypeConverter
-//    fun styleFromString(value: String?): Highlight.Style = Highlight.Style.getOrDefault(value)
-//
-//    @TypeConverter
-//    fun styleToString(style: Highlight.Style): String = style.value
-
     @TypeConverter
     fun textFromString(value: String?): Locator.Text = Locator.Text.fromJSON(
         value?.let { JSONObject(it) }

@@ -6,12 +6,8 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 class HighlightJson(
-    @SerializedName("creation")
-    val creation: String?,   //long
     @SerializedName("bookId")
     val bookId: String,  //bookIdef
-    @SerializedName("style")
-    val style: String,   //long
     @SerializedName("tint")
     val tint: Int,
     @SerializedName("href")
@@ -25,7 +21,7 @@ class HighlightJson(
     @SerializedName("annotation")
     val annotation: String,
     @SerializedName("text")
-    val text: TextJson,
+    val text: String = "{}",
     @SerializedName("locations")
-    val locations: LocationJson,
+    val locations: String = "{}",
 ) : Parcelable

@@ -19,8 +19,7 @@ data class BookmarkJson(
     @SerializedName("resourceTitle")
     val resourceTitle: String,
     @SerializedName("location")
-    val location: String,
+    val location: String = "{}",
     @SerializedName("locatorText")
     val locatorText: String,
-)
-    : Parcelable
+) : Parcelable

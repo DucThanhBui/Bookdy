@@ -1,17 +1,32 @@
 package com.example.bookdy.utils
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.lifecycleScope
 import com.example.bookdy.R
 import com.example.bookdy.bookshelf.BookshelfViewModel
 import com.example.bookdy.data.model.Book
+import com.example.bookdy.data.model.Bookmark
+import com.example.bookdy.data.model.Highlight
+import com.example.bookdy.data.model.HighlightConverters
+import com.example.bookdy.data.modeljson.BookJson
+import com.example.bookdy.data.modeljson.BookmarkJson
+import com.example.bookdy.data.modeljson.HighlightJson
 import com.example.bookdy.favorite.FavoriteFragment.Companion.ADD_TO_FAVORITE
+import com.example.bookdy.utils.extensions.flattenToList
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.divider.MaterialDivider
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 
 
 class CustomDialog(
@@ -26,12 +41,24 @@ class CustomDialog(
         val view = inflater.inflate(R.layout.dialog_bookshelf, container, false)
         dialog?.setTitle(context?.resources?.getString(R.string.dialog_title))
         val favButton: TextView = view.findViewById(R.id.add_book_fab)
-        if (book.isFavorite == 1) favButton.visibility = View.GONE
+        val dvdFav: MaterialDivider = view.findViewById(R.id.dvdAddFav)
+        if (book.isFavorite == 1) {
+            favButton.visibility = View.GONE
+            dvdFav.visibility = View.GONE
+        }
 
         val deleteButton: TextView = view.findViewById(R.id.delete_book)
 
         val uploadButton: TextView = view.findViewById(R.id.upload)
-        if (book.isSync == 0 && isLogin) uploadButton.visibility = View.VISIBLE
+        val dividerUpload: MaterialDivider = view.findViewById(R.id.dvdUpload)
+        Log.d("Readiumxxx", "book.sync is ${book.isSync}")
+        if (book.isSync == 0 && isLogin) {
+            uploadButton.visibility = View.VISIBLE
+            dividerUpload.visibility = View.VISIBLE
+        } else {
+            uploadButton.visibility = View.GONE
+            dividerUpload.visibility = View.GONE
+        }
 
         favButton.setOnClickListener {
             bookshelfViewModel.markFavorite(book, ADD_TO_FAVORITE)
@@ -51,6 +78,16 @@ class CustomDialog(
             }
             .show()
             dismiss()
+        }
+
+        uploadButton.setOnClickListener {
+            if (bookshelfViewModel.networkStatus) {
+                bookshelfViewModel.doUploadBook(book)
+                dismiss()
+            } else {
+                bookshelfViewModel.showNetworkStatus()
+                dismiss()
+            }
         }
 
         return view

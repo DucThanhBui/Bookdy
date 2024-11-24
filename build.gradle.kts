@@ -114,6 +114,9 @@ dependencies {
     // Room database
     implementation(libs.bundles.room)
     ksp(libs.androidx.room.compiler)
+    implementation(libs.logging.interceptor)
+
+
 
     // Gson
     implementation (libs.gson)

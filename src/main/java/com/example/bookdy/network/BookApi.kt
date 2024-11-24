@@ -46,14 +46,19 @@ interface BookApi {
     @Multipart
     @POST("/upload")
     suspend fun uploadBook(
-        @Part files: List<MultipartBody.Part>,
-        @Part("fileInfo") fileInfo: RequestBody
+        @Part file: MultipartBody.Part
+    ) : ResponseMessage
+
+    @POST("/upload-info")
+    suspend fun uploadBookInfo(
+        @Header("Authorization") token: String,
+        @Body bookInfo: BookJson
     ) : ResponseMessage
 
     @GET("/files")
     suspend fun getAllFiles(
         @Header("Authorization") token: String
-    ): ResponseMessage
+    ): List<BookJson>
 
     @GET("/file")
     suspend fun getFile(

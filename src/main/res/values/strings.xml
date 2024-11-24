@@ -250,4 +250,7 @@
     <string name="dialog_title">Option</string>
     <string name="upload">Upload</string>
     <string name="upload_to_cloud">Upload to cloud</string>
+    <string name="title_favorite">Favorites</string>
+    <string name="upload_success">Upload successfully</string>
+    <string name="upload_fail">Upload fail</string>
 </resources>

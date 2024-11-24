@@ -142,7 +142,12 @@ class Bookshelf(
 
     suspend fun markFavorite(book: Book, favType: Int) {
         val idf = book.identifier
-        bookRepository.markFavprite(idf, favType)
+        bookRepository.markFavorite(idf, favType)
+    }
+
+    suspend fun markSync(book: Book, syncType: Int) {
+        val idf = book.identifier
+        bookRepository.markSync(idf, syncType)
     }
 
     suspend fun deleteBook(book: Book) {

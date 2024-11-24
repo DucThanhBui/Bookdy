@@ -28,7 +28,7 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_bookshelf,
-                R.id.navigation_about,
+                R.id.navigation_favorite,
                 R.id.navigation_user
             )
         )

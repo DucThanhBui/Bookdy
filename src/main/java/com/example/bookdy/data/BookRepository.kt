@@ -1,8 +1,6 @@
 package com.example.bookdy.data
 
-import android.util.Log
 import androidx.annotation.ColorInt
-import androidx.lifecycle.asLiveData
 import java.io.File
 import kotlinx.coroutines.flow.Flow
 import org.joda.time.DateTime
@@ -47,6 +45,9 @@ class BookRepository(
     fun bookmarksForBook(bookIdf: String): Flow<List<Bookmark>> =
         booksDao.getBookmarksForBook(bookIdf)
 
+    suspend fun bookmarksDirectlyForBook(bookIdf: String): List<Bookmark> =
+        booksDao.getBookmarksDirectlyForBook(bookIdf)
+
     suspend fun deleteBookmark(bookmarkId: Long) = booksDao.deleteBookmark(bookmarkId)
 
     suspend fun highlightById(id: Long): Highlight? =
@@ -54,6 +55,9 @@ class BookRepository(
 
     fun highlightsForBook(bookIdf: String): Flow<List<Highlight>> =
         booksDao.getHighlightsForBook(bookIdf)
+
+    suspend fun highlightsDirectlyForBook(bookIdf: String): List<Highlight> =
+        booksDao.getHighlightsDirectlyForBook(bookIdf)
 
     suspend fun addHighlight(
         bookIdf: String,
@@ -96,8 +100,12 @@ class BookRepository(
         return booksDao.insertBook(book)
     }
 
-    suspend fun markFavprite(bookIdf: String, favType: Int) {
+    suspend fun markFavorite(bookIdf: String, favType: Int) {
         booksDao.markFavorite(bookIdf, favType)
+    }
+
+    suspend fun markSync(bookIdf: String, syncType: Int) {
+        booksDao.markSync(bookIdf, syncType)
     }
 
     suspend fun deleteBook(bookIdf: String) =

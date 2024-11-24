@@ -1,5 +1,6 @@
 package com.example.bookdy.utils.extensions
 
+import android.util.Log
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
@@ -47,3 +48,8 @@ fun <T, M> StateFlow<T>.mapStateIn(
             SharingStarted.Eagerly,
             transform(value)
         )
+suspend fun <T> Flow<List<T>>.flattenToList(s: String) =
+    flatMapConcat {
+        Log.d("Readiumxxx", "$s flattenToList")
+        it.asFlow()
+    }.toList()

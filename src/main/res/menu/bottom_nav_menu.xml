@@ -3,13 +3,13 @@
 
     <item
         android:id="@+id/bookshelf"
-        android:icon="@drawable/baseline_local_library_24"
+        android:icon="@drawable/baseline_local_library_242"
         android:title="@string/title_bookshelf" />
 
     <item
         android:id="@+id/about"
-        android:icon="@drawable/baseline_info_24"
-        android:title="@string/title_about" />
+        android:icon="@drawable/media3_icon_star_filled"
+        android:title="@string/title_favorite" />
 
     <item
         android:id="@+id/user"

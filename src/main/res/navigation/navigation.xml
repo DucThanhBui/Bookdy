@@ -5,7 +5,7 @@
     app:startDestination="@+id/bookshelf">
 
     <include app:graph="@navigation/bookshelf" />
-    <include app:graph="@navigation/about" />
+    <include app:graph="@navigation/favorite" />
     <include app:graph="@navigation/user" />
 
 </navigation>

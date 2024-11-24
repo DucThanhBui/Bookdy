@@ -27,9 +27,9 @@ data class Book(
     @ColumnInfo(name = COVER)
     val cover: String,
     @ColumnInfo(name = SYNC)
-    val isSync: Int? = null,
+    var isSync: Int? = null,
     @ColumnInfo(name = FAVORITE)
-    val isFavorite: Int? = null
+    var isFavorite: Int? = null
 ) {
 
     constructor(

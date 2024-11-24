@@ -31,10 +31,18 @@ interface BooksDao {
     @Query("SELECT * FROM " + Bookmark.TABLE_NAME + " WHERE " + Bookmark.BOOK_IDF + " = :bookIdf")
     fun getBookmarksForBook(bookIdf: String): Flow<List<Bookmark>>
 
+    @Query("SELECT * FROM " + Bookmark.TABLE_NAME + " WHERE " + Bookmark.BOOK_IDF + " = :bookIdf")
+    suspend fun getBookmarksDirectlyForBook(bookIdf: String): List<Bookmark>
+
     @Query(
         "SELECT * FROM ${Highlight.TABLE_NAME} WHERE ${Highlight.BOOK_IDF} = :bookIdf ORDER BY ${Highlight.TOTAL_PROGRESSION} ASC"
     )
     fun getHighlightsForBook(bookIdf: String): Flow<List<Highlight>>
+
+    @Query(
+        "SELECT * FROM ${Highlight.TABLE_NAME} WHERE ${Highlight.BOOK_IDF} = :bookIdf ORDER BY ${Highlight.TOTAL_PROGRESSION} ASC"
+    )
+    suspend fun getHighlightsDirectlyForBook(bookIdf: String): List<Highlight>
 
     @Query("SELECT * FROM ${Highlight.TABLE_NAME} WHERE ${Highlight.ID} = :highlightId")
     suspend fun getHighlightById(highlightId: Long): Highlight?
@@ -70,4 +78,9 @@ interface BooksDao {
         "UPDATE " + Book.TABLE_NAME + " SET " + Book.FAVORITE + " = :favType WHERE " + Book.IDENTIFIER + "= :bookIdf"
     )
     suspend fun markFavorite(bookIdf: String, favType: Int)
+
+    @Query(
+        "UPDATE " + Book.TABLE_NAME + " SET " + Book.SYNC + " = :syncType WHERE " + Book.IDENTIFIER + "= :bookIdf"
+    )
+    suspend fun markSync(bookIdf: String, syncType: Int)
 }

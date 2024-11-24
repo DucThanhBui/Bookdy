@@ -10,6 +10,7 @@ import androidx.navigation.Navigation
 import com.example.bookdy.R
 import com.example.bookdy.databinding.FragmentUserBinding
 import com.example.bookdy.utils.current_username
+import com.example.bookdy.utils.global_token
 import com.example.bookdy.utils.isLogin
 
 class UserFragment : Fragment() {
@@ -32,6 +33,7 @@ class UserFragment : Fragment() {
         binding.logout.setOnClickListener {
             Navigation.findNavController(requireView()).navigate(R.id.action_navigation_user_to_navigation_login)
             loginViewModel.token = null
+            global_token = ""
             isLogin = false
             current_username = ""
         }
