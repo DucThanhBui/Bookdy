@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class HighlightJson(
+data class HighlightJson(
     @SerializedName("bookId")
     val bookId: String,  //bookIdef
     @SerializedName("tint")
@@ -21,7 +21,7 @@ class HighlightJson(
     @SerializedName("annotation")
     val annotation: String,
     @SerializedName("text")
-    val text: String = "{}",
-    @SerializedName("locations")
-    val locations: String = "{}",
+    val text: String,
+    @SerializedName("location")
+    val location: String,
 ) : Parcelable

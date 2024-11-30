@@ -2,6 +2,7 @@ package com.example.bookdy.data.model
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import org.json.JSONObject
@@ -11,6 +12,14 @@ import org.readium.r2.shared.util.mediatype.MediaType
 
 @Entity(
     tableName = Bookmark.TABLE_NAME,
+    foreignKeys = [
+        ForeignKey(
+            entity = Book::class,
+            parentColumns = [Book.IDENTIFIER],
+            childColumns = [Bookmark.BOOK_IDF],
+            onDelete = ForeignKey.CASCADE
+        )
+    ],
     indices = [
         Index(
             value = [Bookmark.BOOK_IDF, Bookmark.LOCATION],

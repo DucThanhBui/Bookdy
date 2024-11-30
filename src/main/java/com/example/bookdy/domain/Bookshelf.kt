@@ -50,6 +50,12 @@ class Bookshelf(
         }
     }
 
+    suspend fun importPublicationFromHttp(
+        url: AbsoluteUrl
+    ) {
+        addBookFeedback(publicationRetriever.retrieveFromHttp(url))
+    }
+
     fun addPublicationFromStorage(
         url: AbsoluteUrl
     ) {
