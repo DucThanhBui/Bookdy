@@ -26,6 +26,10 @@ class UserFragment : Fragment() {
 
         binding.name.text = current_username
 
+        binding.cloud.setOnClickListener {
+            Navigation.findNavController(requireView()).navigate(R.id.action_navigation_user_to_cloudFragment)
+        }
+
         binding.changePassword.setOnClickListener {
             Navigation.findNavController(requireView()).navigate(R.id.action_navigation_user_to_navigation_changepwd)
         }

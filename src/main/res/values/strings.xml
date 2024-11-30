@@ -77,7 +77,7 @@
     <string name="delete">Delete</string>
     <string name="cancel">Cancel</string>
     <string name="confirm_delete_book_title">Delete Book?</string>
-    <string name="confirm_delete_book_text">Are you sure you want to delete this book?</string>
+    <string name="confirm_delete_book_text">Are you sure you want to delete this book? I will be also deleted from the cloud storage</string>
     <string name="confirm_delete_catalog_title">Delete Catalog?</string>
     <string name="confirm_delete_catalog_text">Are you sure you want to delete this Catalog feed?</string>
 
@@ -253,4 +253,8 @@
     <string name="title_favorite">Favorites</string>
     <string name="upload_success">Upload successfully</string>
     <string name="upload_fail">Upload fail</string>
+    <string name="delete_complete">Delete complete</string>
+    <string name="download_failed">Download Failed</string>
+    <string name="starting_download_book">Starting download book</string>
+    <string name="downloading">Downloading</string>
 </resources>

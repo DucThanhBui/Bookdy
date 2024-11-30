@@ -76,5 +76,5 @@ interface BookApi {
     suspend fun deleteBook(
         @Header("Authorization") token: String,
         @Query("identifier") identifier: String
-    )
+    ): ResponseMessage
 }

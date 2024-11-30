@@ -49,7 +49,6 @@ class BookshelfFragment : Fragment() {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
                 networkListener.checkNetworkAvailability(requireContext()).collect { status ->
                     bookshelfViewModel.networkStatus = status
-                    bookshelfViewModel.showNetworkStatus()
                 }
             }
         }
@@ -96,7 +95,7 @@ class BookshelfFragment : Fragment() {
         }
 
         binding.bookshelfAddBookFab.setOnClickListener {
-            appStoragePickerLauncher.launch("*/*")
+            appStoragePickerLauncher.launch("application/epub+zip")
         }
     }
 

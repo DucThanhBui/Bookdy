@@ -6,7 +6,8 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 object BookApiService {
-    private const val BASE_URL = "http://192.168.0.11:8000/"
+    //const val BASE_URL = "http://192.168.0.11:8000/"
+    const val BASE_URL = "http://192.168.15.89:8000/"
 
     private val gsonConverterFactory = GsonConverterFactory.create()
 

@@ -16,7 +16,7 @@ import com.example.bookdy.data.model.Highlight
 import org.joda.time.format.DateTimeFormat
 
 class BookRepository(
-    private val booksDao: BooksDao
+    val booksDao: BooksDao
 ) {
     fun books(): Flow<List<Book>> = booksDao.getAllBooks()
     fun favoriteBooks(): Flow<List<Book>> = booksDao.getAllFavoriteBooks()

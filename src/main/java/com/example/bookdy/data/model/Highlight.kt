@@ -75,6 +75,30 @@ data class Highlight(
             annotation = annotation
         )
 
+//    constructor(
+//        bookIdf: String,
+//        tint: Int,
+//        href: String,
+//        type: String,
+//        title: String?,
+//        totalProgression: String,
+//        locations: String,
+//        text: String,
+//        annotation: String
+//    ):
+//        this (
+//            bookIdf = bookIdf,
+//            tint = tint,
+//            href = href,
+//            type = type,
+//            title = title,
+//            totalProgression = totalProgression.toDouble(),
+//            locations = locations,
+//            text = text,
+//            annotation = annotation
+//    )
+
+
     val locator: Locator get() = Locator(
         href = Url(href)!!,
         mediaType = MediaType(type) ?: MediaType.BINARY,

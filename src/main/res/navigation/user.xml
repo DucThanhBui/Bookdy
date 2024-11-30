@@ -28,6 +28,9 @@
         <action
             android:id="@+id/action_navigation_user_to_navigation_login"
             app:destination="@id/navigation_login" />
+        <action
+            android:id="@+id/action_navigation_user_to_cloudFragment"
+            app:destination="@id/cloudFragment" />
     </fragment>
     <fragment
         android:id="@+id/navigation_changepwd"
@@ -47,5 +50,10 @@
             android:id="@+id/action_navigation_register_to_navigation_login"
             app:destination="@id/navigation_login" />
     </fragment>
+    <fragment
+        android:id="@+id/cloudFragment"
+        android:name="com.example.bookdy.login.CloudFragment"
+        android:label="fragment_cloud"
+        tools:layout="@layout/fragment_cloud" />
 
 </navigation>

@@ -102,6 +102,26 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    fun openPublicationDirectly(
+        bookIdf: String,
+        context: Context
+    ) {
+        viewModelScope.launch {
+            app.readerRepository
+                .open(bookIdf)
+                .onFailure {
+                    Toast.makeText(context, context.getString(R.string.opening_error), Toast.LENGTH_SHORT).show()
+                }
+                .onSuccess {
+                    val intent = ReaderActivityContract().createIntent(
+                        context,
+                        ReaderActivityContract.Arguments(bookIdf)
+                    )
+                    context.startActivity(intent)
+                }
+        }
+    }
+
     @SuppressLint("LogNotTimber")
     private suspend fun uploadFiles(fileUri: String, coverPath: String, fileInfo: BookJson): ResponseMessage {
         // Create MultipartBody.Part for each file
@@ -144,14 +164,14 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
         var coverOnServer: String = ""
-        if (response2.status != -1) coverOnServer = response.message
+        if (response2.status != -1) coverOnServer = response2.message
         else return response2
         Log.d(TAG, "coverOnServer is $coverOnServer")
 
         // Make the API call
         Log.d("Readiumxxx", "call API")
-        fileInfo.pathOnServer = pathOnServer
-        fileInfo.cover = coverOnServer
+        fileInfo.pathOnServer = pathOnServer.replace("\\", "/")
+        fileInfo.cover = coverOnServer.replace("\\", "/")
         Log.d(TAG, "fileInfo is $fileInfo")
         return BookApiService.retrofitService.uploadBookInfo(token = global_token, bookInfo = fileInfo)
     }
@@ -168,6 +188,7 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
             val bookmarksJson = mutableListOf<BookmarkJson>()
             val highlightsJson = mutableListOf<HighlightJson>()
             bookmarks.forEach {
+                Log.e(TAG, "boomark loc: " + it.location)
                 val bmJson = BookmarkJson(
                     creation = it.creation,
                     bookId = it.bookIdf,
@@ -178,10 +199,14 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
                     locatorText = it.locatorText,
                     location = it.location
                 )
+                Log.e(TAG, "bmjson loc is ${bmJson.location}")
+                Log.e(TAG, "bookmarkJson add to list is $bmJson")
                 bookmarksJson.add(bmJson)
             }
             val hlconverter = HighlightConverters()
             hls.forEach {
+                val location = hlconverter.locationsToString(it.locations)
+                Log.e(TAG, "hightlight loc: $location")
                 val hlJson = HighlightJson(
                     bookId = it.bookIdf,
                     tint = it.tint,
@@ -191,8 +216,9 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
                     totalProgression = it.totalProgression.toString(),
                     annotation = it.annotation,
                     text = hlconverter.textToString(it.text),
-                    locations = hlconverter.locationsToString(it.locations)
+                    location = location
                 )
+                Log.e(TAG, "hlJson add to list is $hlJson")
                 highlightsJson.add(hlJson)
             }
             val bookInfo = BookJson(
@@ -202,13 +228,13 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
                 author = book.author,
                 progression = book.progression,
                 rawMediaType = book.rawMediaType,
-                bookmarks = bookmarksJson.toList(),
-                highlights = highlightsJson.toList()
+                bookmarks = bookmarksJson,
+                highlights = highlightsJson
             )
-            Log.d("Readiumxxx", "data ready")
+            Log.d("Readiumxxx", "dat/a ready")
             val response =  uploadFiles(book.href, book.cover, bookInfo)
             Log.d(TAG, "response is ${response.status}, ${response.message}")
-            if (response.status != -1) markSync(book, SYNC_ED)
+            //if (response.status != -1) markSync(book, SYNC_ED)
             Handler(Looper.getMainLooper()).post {
                 if (response.status == -1) {
                     Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.server_error), Toast.LENGTH_SHORT).show()
