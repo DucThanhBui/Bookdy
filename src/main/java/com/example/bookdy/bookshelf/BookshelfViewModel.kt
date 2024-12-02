@@ -43,6 +43,7 @@ import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.File
+import java.net.SocketTimeoutException
 
 class BookshelfViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -139,7 +140,10 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
         Handler(Looper.getMainLooper()).post {
             if (response.status == -1) {
                 Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.upload_fail), Toast.LENGTH_SHORT).show()
-            } else {
+            } else if (response.status == -2) {
+                Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.already_uploaded_then_update), Toast.LENGTH_SHORT).show()
+            }
+            else {
                 Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
             }
         }
@@ -156,13 +160,13 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
         Log.d(TAG, "cover filename is ${cover.name}")
         val coverPart = MultipartBody.Part.createFormData("file", cover.name, requestCover)
         val response2 = BookApiService.retrofitService.uploadBook(coverPart)
-        Handler(Looper.getMainLooper()).post {
-            if (response2.status == -1) {
-                Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.upload_fail), Toast.LENGTH_SHORT).show()
-            } else {
-                Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
-            }
-        }
+//        Handler(Looper.getMainLooper()).post {
+//            if (response2.status == -1) {
+//                Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.upload_fail), Toast.LENGTH_SHORT).show()
+//            } else {
+//                Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
+//            }
+//        }
         var coverOnServer: String = ""
         if (response2.status != -1) coverOnServer = response2.message
         else return response2
@@ -173,7 +177,17 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
         fileInfo.pathOnServer = pathOnServer.replace("\\", "/")
         fileInfo.cover = coverOnServer.replace("\\", "/")
         Log.d(TAG, "fileInfo is $fileInfo")
-        return BookApiService.retrofitService.uploadBookInfo(token = global_token, bookInfo = fileInfo)
+        return try {
+            if (response2.status == -2) {
+                BookApiService.retrofitService.updateFileInfo(global_token, fileInfo)
+            } else BookApiService.retrofitService.uploadBookInfo(
+                token = global_token,
+                bookInfo = fileInfo
+            )
+        } catch (e: SocketTimeoutException) {
+            Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.server_error), Toast.LENGTH_SHORT).show()
+            ResponseMessage(-1, app.applicationContext.getString(R.string.server_error))
+        }
     }
 
     @SuppressLint("LogNotTimber")
@@ -234,7 +248,8 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
             Log.d("Readiumxxx", "dat/a ready")
             val response =  uploadFiles(book.href, book.cover, bookInfo)
             Log.d(TAG, "response is ${response.status}, ${response.message}")
-            //if (response.status != -1) markSync(book, SYNC_ED)
+
+
             Handler(Looper.getMainLooper()).post {
                 if (response.status == -1) {
                     Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.server_error), Toast.LENGTH_SHORT).show()
@@ -242,6 +257,7 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
                     Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
                 }
             }
+
         }
     }
 

@@ -159,6 +159,7 @@ class CloudFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             val book = app.bookRepository.get(bookJson.identifier)
             if (book != null) {
+                Log.e("Readiumxxx", " book not null")
                 bookshelfViewModel.deletePublication(book)
             }
             loginViewModel.deleteBook(bookJson, requireContext())

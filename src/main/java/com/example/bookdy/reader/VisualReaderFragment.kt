@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Color
 import android.graphics.RectF
 import android.os.Bundle
+import android.util.Log
 import android.view.ActionMode
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -21,6 +22,7 @@ import android.widget.LinearLayout
 import android.widget.ListPopupWindow
 import android.widget.PopupWindow
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -65,6 +67,7 @@ import org.readium.r2.shared.ExperimentalReadiumApi
 import org.readium.r2.shared.publication.Locator
 import org.readium.r2.shared.util.Language
 import com.example.bookdy.databinding.FragmentReaderBinding
+import com.example.bookdy.network.BookApiService
 import com.example.bookdy.reader.tts.TtsControls
 import com.example.bookdy.reader.tts.TtsPreferencesBottomSheetDialogFragment
 import com.example.bookdy.reader.tts.TtsViewModel
@@ -359,6 +362,7 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
                 menu.findItem(R.id.highlight).isVisible = true
                 menu.findItem(R.id.translate).isVisible = true
                 menu.findItem(R.id.note).isVisible = true
+                menu.findItem(R.id.smart_search).isVisible = true
             }
             return true
         }
@@ -368,6 +372,7 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
                 R.id.highlight -> showHighlightPopupWithStyle()
                 R.id.translate -> showTranslateDialog()
                 R.id.note -> showAnnotationPopup()
+                R.id.smart_search -> showSmartSearchDialog()
                 else -> return false
             }
 
@@ -376,8 +381,35 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
         }
     }
 
+    private fun showSmartSearchDialog() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            val input = (navigator as? SelectableNavigator)?.currentSelection()?.locator?.text?.highlight ?: ""
+            Log.e("Readiumxxx", "call search with input: $input")
+            //viewLifecycleOwner.lifecycleScope.launch {
+                val response = BookApiService.retrofitService.getSearch(publication.metadata.identifier ?: "", input?: "")
+                if (response.status == -1) {
+                    Toast.makeText(requireContext(), "No results found", Toast.LENGTH_SHORT).show()
+                } else {
+                    showFootnotePopup(response.message)
+                    Log.e("Readiumxxx", "search results: ${response.message}")
+                }
+           // }
+        }
+    }
+
     private fun showTranslateDialog() {
-        TODO("Not yet implemented")
+        viewLifecycleOwner.lifecycleScope.launch {
+            val chapterName = (navigator as? SelectableNavigator)?.currentSelection()?.locator?.title ?: ""
+            Log.e("Readiumxxx", "call summary with chapter: $chapterName")
+            //viewLifecycleOwner.lifecycleScope.launch {
+                val response = BookApiService.retrofitService.getSummarize(publication.metadata.identifier ?: "", chapterName)
+                if (response.status == -1) {
+                    Toast.makeText(requireContext(), "No results found", Toast.LENGTH_SHORT).show()
+                } else {
+                    showFootnotePopup(response.message)
+                }
+            //}
+        }
     }
 
     private fun showHighlightPopupWithStyle() {

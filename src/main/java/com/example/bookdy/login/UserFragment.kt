@@ -12,6 +12,7 @@ import com.example.bookdy.databinding.FragmentUserBinding
 import com.example.bookdy.utils.current_username
 import com.example.bookdy.utils.global_token
 import com.example.bookdy.utils.isLogin
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class UserFragment : Fragment() {
     private var _binding: FragmentUserBinding? = null
@@ -28,6 +29,10 @@ class UserFragment : Fragment() {
 
         binding.cloud.setOnClickListener {
             Navigation.findNavController(requireView()).navigate(R.id.action_navigation_user_to_cloudFragment)
+        }
+
+        binding.language.setOnClickListener {
+
         }
 
         binding.changePassword.setOnClickListener {

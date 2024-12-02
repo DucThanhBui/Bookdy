@@ -257,4 +257,7 @@
     <string name="download_failed">Download Failed</string>
     <string name="starting_download_book">Starting download book</string>
     <string name="downloading">Downloading</string>
+    <string name="already_uploaded_then_update">Book uploaded, update new progression</string>
+    <string name="confirm_delete_book_local_text">Are you sure you want to delete this book?</string>
+    <string name="smart_search">Smart Search</string>
 </resources>

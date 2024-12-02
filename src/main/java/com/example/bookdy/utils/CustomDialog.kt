@@ -68,7 +68,7 @@ class CustomDialog(
         deleteButton.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
             .setTitle(getString(R.string.confirm_delete_book_title))
-            .setMessage(getString(R.string.confirm_delete_book_text))
+            .setMessage(getString(R.string.confirm_delete_book_local_text))
             .setNegativeButton(getString(R.string.cancel)) { dialog, _ ->
                 dialog.cancel()
             }

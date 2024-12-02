@@ -4,10 +4,11 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.concurrent.TimeUnit
 
 object BookApiService {
-    //const val BASE_URL = "http://192.168.0.11:8000/"
-    const val BASE_URL = "http://192.168.15.89:8000/"
+    const val BASE_URL = "http://192.168.0.11:8000/"
+    //const val BASE_URL = "http://192.168.15.89:8000/"
 
     private val gsonConverterFactory = GsonConverterFactory.create()
 
@@ -15,6 +16,8 @@ object BookApiService {
         .addInterceptor(HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         })
+        .readTimeout(3600, TimeUnit.SECONDS)
+        .connectTimeout(3600, TimeUnit.SECONDS)
         .build()
 
     private val retrofit = Retrofit.Builder()

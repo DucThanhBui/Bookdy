@@ -72,9 +72,21 @@ interface BookApi {
         @Body fileInfo: BookJson
     ): ResponseMessage
 
-    @DELETE
+    @DELETE("/delete")
     suspend fun deleteBook(
         @Header("Authorization") token: String,
         @Query("identifier") identifier: String
+    ): ResponseMessage
+
+    @POST("/search")
+    suspend fun getSearch(
+        @Query("idf") idf: String,
+        @Query("input") input: String
+    ): ResponseMessage
+
+    @GET("/summarize")
+    suspend fun getSummarize(
+        @Query("idf") idf: String,
+        @Query("chapterName") chapterName: String
     ): ResponseMessage
 }

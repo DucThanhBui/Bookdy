@@ -23,4 +23,12 @@
         app:showAsAction="ifRoom">
     </item>
 
+    <item
+        android:id="@+id/smart_search"
+        android:title="@string/smart_search"
+        android:visible="false"
+        app:showAsAction="ifRoom">
+    </item>
+
+
 </menu>
