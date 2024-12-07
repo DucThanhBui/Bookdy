@@ -56,31 +56,16 @@ class Bookshelf(
         addBookFeedback(publicationRetriever.retrieveFromHttp(url))
     }
 
-    fun addPublicationFromStorage(
-        url: AbsoluteUrl
-    ) {
-        coroutineScope.launch {
-            addBookFeedback(url)
-        }
-    }
-
     private suspend fun addBookFeedback(
         retrieverResult: Try<PublicationRetriever.Result, ImportError>
     ) {
+        var result: Try<Unit, ImportError>? = null
         retrieverResult
-            .map { addBook(it.publication.toUrl(), it.format, it.coverUrl) }
-            .onSuccess { channel.send(Event.ImportPublicationSuccess) }
-            .onFailure { channel.send(Event.ImportPublicationError(it)) }
-    }
-
-    private suspend fun addBookFeedback(
-        url: AbsoluteUrl,
-        format: Format? = null,
-        coverUrl: AbsoluteUrl? = null
-    ) {
-        addBook(url, format, coverUrl)
-            .onSuccess { channel.send(Event.ImportPublicationSuccess) }
-            .onFailure { channel.send(Event.ImportPublicationError(it)) }
+            .map {
+                result = addBook(it.publication.toUrl(), it.format, it.coverUrl); result
+            }
+        if (result is Try.Success) channel.send(Event.ImportPublicationSuccess)
+        else result?.onFailure { channel.send(Event.ImportPublicationError(it)) }
     }
 
     private suspend fun addBook(
@@ -122,8 +107,8 @@ class Bookshelf(
             if (id == -2L) {
                 coverFile.delete()
                 return Try.failure(
-                    ImportError.Database(
-                        DebugError("Book already existed.")
+                    ImportError.ExistedInDatabase(
+                        DebugError("Book's already imported.")
                     )
                 )
             }

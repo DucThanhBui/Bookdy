@@ -83,10 +83,6 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
         app.bookshelf.importPublicationFromStorage(uri)
     }
 
-    fun addPublicationFromStorage(uri: Uri) {
-        app.bookshelf.addPublicationFromStorage(uri.toUrl()!! as AbsoluteUrl)
-    }
-
     fun openPublication(
         bookIdf: String
     ) {
@@ -160,16 +156,10 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
         Log.d(TAG, "cover filename is ${cover.name}")
         val coverPart = MultipartBody.Part.createFormData("file", cover.name, requestCover)
         val response2 = BookApiService.retrofitService.uploadBook(coverPart)
-//        Handler(Looper.getMainLooper()).post {
-//            if (response2.status == -1) {
-//                Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.upload_fail), Toast.LENGTH_SHORT).show()
-//            } else {
-//                Toast.makeText(app.applicationContext, app.applicationContext.getString(R.string.upload_success), Toast.LENGTH_SHORT).show()
-//            }
-//        }
         var coverOnServer: String = ""
         if (response2.status != -1) coverOnServer = response2.message
         else return response2
+
         Log.d(TAG, "coverOnServer is $coverOnServer")
 
         // Make the API call

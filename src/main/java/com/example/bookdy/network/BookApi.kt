@@ -89,4 +89,13 @@ interface BookApi {
         @Query("idf") idf: String,
         @Query("chapterName") chapterName: String
     ): ResponseMessage
+
+    @POST("/translate")
+    suspend fun getTranslate(
+        @Query("text") text: String,
+        @Query("before") before: String,
+        @Query("after") after: String,
+        @Query("src_lang") src: String,
+        @Query("des_lang") des: String,
+    ): ResponseMessage
 }

@@ -60,11 +60,15 @@ class LoginViewModel(application: Application): AndroidViewModel(application) {
     fun deleteBook(book: BookJson, context: Context) {
         if (networkStatus && !token.isNullOrEmpty()) {
             viewModelScope.launch {
-                val response = BookApiService.retrofitService.deleteBook(token!!, book.identifier)
-                if (response.status == -1) {
-                    Toast.makeText(context, response.message, Toast.LENGTH_SHORT).show()
-                } else {
-                    Toast.makeText(context, context.getString(R.string.delete_complete), Toast.LENGTH_SHORT).show()
+                try {
+                    val response = BookApiService.retrofitService.deleteBook(token!!, book.identifier)
+                    if (response.status == -1) {
+                        Toast.makeText(context, response.message, Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(context, context.getString(R.string.delete_complete), Toast.LENGTH_SHORT).show()
+                    }
+                } catch (e: Exception) {
+                    Toast.makeText(context, context.getString(R.string.delete_failed), Toast.LENGTH_SHORT).show()
                 }
             }
         }

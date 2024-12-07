@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="epubactivity_drm_info">DRM</string>
+    <string name="epubactivity_set_bookmark">Thêm đánh dấu</string>
+    <string name="epubactivity_settings">Cài đặt</string>
+    <string name="epubactivity_book_nav_options">Menu điều hướng</string>
+    <string name="epubactivity_read_aloud_start">Đọc</string>
+    <string name="epubactivity_search">Tìm kiếm</string>
+
+    <string name="title_fragment_drm_management">Quản lý DRM</string>
+    <string name="more_options">Tùy chọn khác</string>
+    <string name="popup_delete_button">XÓA</string>
+    <string name="catalog_list_more">Xem thêm</string>
+    <string name="catalog_detail_download_button">Tải xuống</string>
+
+    <!-- Accessibility -->
+
+    <string name="drm_information_header">THÔNG TIN</string>
+    <string name="drm_label_license_type">Loại giấy phép</string>
+    <string name="drm_label_state">Trạng thái</string>
+    <string name="drm_label_provider">Nhà cung cấp</string>
+    <string name="drm_label_issued">Cấp phát</string>
+    <string name="drm_label_updated">Cập nhật</string>
+    <string name="drm_label_rights">QUYỀN</string>
+    <string name="drm_label_prints_left">Số lần in còn lại</string>
+    <string name="drm_label_copies_left">Số bản sao còn lại</string>
+    <string name="drm_label_start">Bắt đầu</string>
+    <string name="drm_label_end">Kết thúc</string>
+    <string name="drm_label_actions">HÀNH ĐỘNG</string>
+    <string name="drm_label_renew">GIA HẠN</string>
+    <string name="drm_label_return">TRẢ LẠI</string>
+    <string name="zero">00:00</string>
+    <string name="chapter_page">Chương / Trang</string>
+    <string name="progression">Tiến trình</string>
+    <string name="timestamp">Dấu thời gian</string>
+
+    <!-- Outlines -->
+    <string name="contents_tab_label">Nội dung</string>
+    <string name="bookmarks_tab_label">Dấu trang</string>
+    <string name="highlights_tab_label">Highlight</string>
+    <string name="pagelist_tab_label">Danh sách trang</string>
+    <string name="landmarks_tab_label">Cột mốc</string>
+    <string name="action_mode_menu_highlight">Highlight</string>
+    <string name="action_mode_menu_underline">Gạch chân</string>
+    <string name="action_mode_menu_note">Ghi chú</string>
+    <string name="bookmark_added">Đã thêm dấu trang</string>
+    <string name="bookmark_exists">Dấu trang đã tồn tại</string>
+
+    <string name="title_catalogs">Danh mục</string>
+    <string name="title_bookshelf">Kệ sách</string>
+    <string name="title_about">Giới thiệu</string>
+    <string name="cover_image">Ảnh bìa</string>
+    <string name="repfr">repfr</string>
+
+    <string name="details">Chi tiết</string>
+    <string name="close">Đóng</string>
+    <string name="share">Chia sẻ</string>
+    <string name="delete">Xóa</string>
+    <string name="cancel">Hủy</string>
+    <string name="confirm_delete_book_title">Xóa?</string>
+    <string name="confirm_delete_book_text">Bạn có chắc chắn muốn xóa cuốn sách này? Nó cũng sẽ bị xóa khỏi kho lưu trữ</string>
+    <string name="confirm_delete_catalog_title">Xóa danh mục?</string>
+    <string name="confirm_delete_catalog_text">Bạn có chắc chắn muốn xóa nguồn danh mục này không?</string>
+
+    <string name="add_book">Thêm sách</string>
+    <string name="add_catalog">Thêm nguồn danh mục</string>
+    <string name="ok">Xác nhận</string>
+    <string name="save">Lưu</string>
+    <string name="enter_title">Nhập tiêu đề</string>
+    <string name="enter_url">Nhập URL</string>
+    <string name="invalid_title">Vui lòng nhập tiêu đề</string>
+    <string name="invalid_url">Vui lòng nhập URL hợp lệ</string>
+    <string name="catalog_parse_error">Lỗi phân tích nguồn danh mục. Vui lòng kiểm tra URL và thử lại</string>
+
+    <string name="return_publication">Hành động này sẽ trả lại ấn phẩm</string>
+    <string name="return_button">Quay lại</string>
+
+    <string name="opening_publication_cannot_render">Không thể hiển thị ấn phẩm.</string>
+    <string name="opening_publication_audio_engine_initialization">Không thể mở ấn phẩm do lỗi khởi tạo công cụ âm thanh.</string>
+
+    <string name="import_publication_unexpected_io_exception">Không thể thêm ấn phẩm do lỗi không mong muốn trên thiết bị của bạn</string>
+    <string name="import_publication_download_failed">Tải xuống ấn phẩm thất bại.</string>
+    <string name="import_publication_no_acquisition">Không thể thực hiện hành động này.</string>
+
+    <string name="import_publication_success">Đã thêm ấn phẩm vào thư viện</string>
+    <string name="import_publication_unable_add_pub_database">Không thể thêm ấn phẩm vào cơ sở dữ liệu</string>
+    <string name="import_publication_inconsistent_state">Nhập thất bại do điều kiện bất thường. Vui lòng thử lại.</string>
+
+    <string name="publication_error_unsupported_asset">Định dạng không được hỗ trợ</string>
+    <string name="publication_error_network_forbidden">Máy chủ từ chối truy cập tài nguyên.</string>
+    <string name="publication_error_network_not_found">Không tìm thấy tài nguyên trên máy chủ.</string>
+    <string name="publication_error_network_unreachable">Không thể kết nối với máy chủ.</string>
+    <string name="publication_error_network_timeout">Máy chủ phản hồi quá lâu.</string>
+    <string name="publication_error_network_ssl_handshake">Đã xảy ra lỗi SSL.</string>
+    <string name="publication_error_network_unexpected">Đã xảy ra lỗi mạng không mong muốn.</string>
+    <string name="publication_error_filesystem_not_found">Không tìm thấy tệp.</string>
+    <string name="publication_error_filesystem_forbidden">Bạn không được phép truy cập tệp.</string>
+    <string name="publication_error_filesystem_unexpected">Đã xảy ra lỗi hệ thống tệp không mong muốn.</string>
+    <string name="publication_error_filesystem_insufficient_space">Không đủ dung lượng trên thiết bị.</string>
+    <string name="publication_error_incorrect_credentials">Thông tin xác thực không chính xác</string>
+    <string name="publication_error_restricted">Bạn không được phép mở ấn phẩm này</string>
+    <string name="publication_error_out_of_memory">Không đủ bộ nhớ trên thiết bị để mở ấn phẩm.</string>
+    <string name="publication_error_scheme_not_supported">Nguồn ấn phẩm không được hỗ trợ.</string>
+    <string name="publication_error_invalid_publication">Ấn phẩm có vẻ bị hỏng.</string>
+    <string name="publication_error_unexpected">Đã xảy ra lỗi không mong muốn.</string>
+
+    <!-- LcpError User Messages -->
+
+    <string name="lcp_error_license_interaction_not_available">Tương tác này không khả dụng</string>
+    <string name="lcp_error_license_profile_not_supported">Giấy phép này có định danh hồ sơ mà ứng dụng này không thể xử lý, ấn phẩm không thể được xử lý</string>
+    <string name="lcp_error_crl_fetching">Không thể lấy Danh sách thu hồi chứng chỉ</string>
+    <string name="lcp_error_network">Lỗi mạng</string>
+    <string name="lcp_error_runtime">Lỗi LCP không mong đợi</string>
+    <string name="lcp_error_unknown">Lỗi LCP không xác định</string>
+
+    <string name="lcp_error_license_status.cancelled">Giấy phép này đã bị hủy vào ngày %1$s</string>
+    <string name="lcp_error_license_status.returned">Giấy phép này đã được trả lại vào ngày %1$s</string>
+    <string name="lcp_error_license_status.not_started">Giấy phép này sẽ bắt đầu vào ngày %1$s</string>
+    <string name="lcp_error_license_status.expired">Giấy phép này đã hết hạn vào ngày %1$s</string>
+    <plurals name="lcp_error_license_status.revoked">
+        <item quantity="one">Giấy phép này đã bị thu hồi bởi nhà cung cấp vào ngày %1$s. Nó đã được đăng ký bởi %2$d thiết bị.</item>
+        <item quantity="other">Giấy phép này đã bị thu hồi bởi nhà cung cấp vào ngày %1$s. Nó đã được đăng ký bởi %2$d thiết bị.</item>
+    </plurals>
+
+    <string name="lcp_error_renew.renew_failed">Ấn phẩm của bạn không thể gia hạn thành công</string>
+    <string name="lcp_error_renew.invalid_renewal_period">Thời gian gia hạn không chính xác, ấn phẩm của bạn không thể gia hạn</string>
+    <string name="lcp_error_renew.unexpected_server_error">Đã xảy ra lỗi không mong muốn trên máy chủ</string>
+
+    <string name="lcp_error_return.return_failed">Ấn phẩm của bạn không thể trả lại thành công</string>
+    <string name="lcp_error_return.already_returned_or_expired">Ấn phẩm của bạn đã được trả lại trước đó hoặc đã hết hạn</string>
+    <string name="lcp_error_return.unexpected_server_error">Đã xảy ra lỗi không mong muốn trên máy chủ</string>
+
+    <string name="lcp_error_parsing">JSON không đại diện cho một tài liệu hợp lệ</string>
+    <string name="lcp_error_parsing.malformed_json">JSON bị lỗi và không thể phân tích</string>
+    <string name="lcp_error_parsing.license_document">JSON không đại diện cho một Tài liệu Giấy phép hợp lệ</string>
+    <string name="lcp_error_parsing.status_document">JSON không đại diện cho một Tài liệu Trạng thái hợp lệ</string>
+
+    <string name="lcp_error_container.open_failed">Không thể mở container giấy phép</string>
+    <string name="lcp_error_container.file_not_found">Không tìm thấy giấy phép trong container</string>
+    <string name="lcp_error_container.read_failed">Không thể đọc giấy phép từ container</string>
+    <string name="lcp_error_container.write_failed">Không thể ghi giấy phép vào container</string>
+
+    <string name="lcp_error_license_integrity.certificate_revoked">Chứng chỉ đã bị thu hồi trong danh sách CRL</string>
+    <string name="lcp_error_license_integrity.invalid_certificate_signature">Chứng chỉ chưa được ký bởi CA</string>
+    <string name="lcp_error_license_integrity.invalid_license_signature_date">Giấy phép được cấp bởi chứng chỉ đã hết hạn</string>
+    <string name="lcp_error_license_integrity.invalid_license_signature">Chữ ký giấy phép không khớp</string>
+    <string name="lcp_error_license_integrity.invalid_user_key_check">Kiểm tra khóa người dùng không hợp lệ</string>
+
+    <string name="lcp_error_decryption.content_key_decrypt_error">Không thể giải mã khóa nội dung mã hóa từ khóa người dùng</string>
+    <string name="lcp_error_decryption.content_decrypt_error">Không thể giải mã nội dung từ khóa nội dung</string>
+
+    <string name="missing_lcp_support">Ứng dụng được biên dịch mà không hỗ trợ LCP.</string>
+    <string name="reader_error">Lỗi</string>
+    <string name="opening_error">Không thể mở ấn phẩm</string>
+    <string name="import_error">Lỗi nhập</string>
+
+    <string name="failed_parsing_catalog">Phân tích danh mục thất bại</string>
+    <string name="no_result">Không có kết quả</string>
+    <string name="note">Ghi chú</string>
+    <string name="add_a_note">Thêm ghi chú</string>
+    <string name="add_an_annotation">Thêm chú thích</string>
+    <string name="delete_highlight_or_annotation">Xóa highlight hoặc chú thích</string>
+    <string name="yellow">Vàng</string>
+    <string name="green">Xanh lá</string>
+    <string name="blue">Xanh dương</string>
+    <string name="red">Đỏ</string>
+    <string name="purple">Tím</string>
+    <string name="seek_bar">Thanh tìm kiếm</string>
+    <string name="go_backward_30_seconds">Lùi lại 30 giây</string>
+    <string name="play_or_pause">Phát hoặc tạm dừng</string>
+    <string name="go_forward_30_seconds">Tiến tới 30 giây</string>
+
+    <string name="tts_error_initialization">Khởi tạo công cụ TTS thất bại</string>
+    <string name="tts_error_language_support_incomplete">Ngôn ngữ %s yêu cầu thêm dữ liệu. Bạn có muốn tải xuống không?</string>
+    <string name="tts_error_network">Đã xảy ra lỗi mạng</string>
+    <string name="tts_error_other">Đã xảy ra lỗi TTS</string>
+    <string name="tts_next">Tiến tới</string>
+    <string name="tts_pause">Tạm dừng</string>
+    <string name="tts_play">Phát</string>
+    <string name="tts_previous">Lùi lại</string>
+    <string name="speed_rate">Tốc độ</string>
+    <string name="pitch_rate">Âm cao</string>
+    <string name="tts_settings">Cài đặt giọng nói</string>
+    <string name="tts_stop">Dừng</string>
+    <string name="tts_voice">Giọng nói</string>
+
+    <string name="search_error_not_searchable">Ấn phẩm này không thể tìm kiếm</string>
+    <string name="search_error_cancelled">Tìm kiếm đã bị hủy</string>
+    <string name="search_error_other">Đã xảy ra lỗi khi tìm kiếm</string>
+
+    <string name="error_unexpected">Đã xảy ra lỗi không mong muốn.</string>
+    <string name="hello_blank_fragment">Xin chào đoạn trống</string>
+    <string name="email">email</string>
+    <string name="translate">Dịch</string>
+    <string name="no_title">Không có tiêu đề</string>
+    <string name="bookmark_progression">Tiến trình</string>
+    <string name="change_password">Đổi mật khẩu</string>
+    <string name="welcome">Chào mừng</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="hint_username">Nhập tên người dùng</string>
+    <string name="hint_password">Nhập mật khẩu</string>
+    <string name="login">Đăng nhập</string>
+    <string name="register">Đăng ký</string>
+    <string name="btn_link_to_login">Đi đến trang đăng nhập</string>
+    <string name="old_password">Mật khẩu cũ</string>
+    <string name="new_password">Mật khẩu mới</string>
+    <string name="new_password2">Nhập lại mật khẩu mới</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="title_login">Đăng nhập</string>
+    <string name="title_user">Hồ sơ người dùng</string>
+    <string name="title_changepwd">Đổi mật khẩu</string>
+    <string name="no_support_this_file">Không hỗ trợ loại tệp này.</string>
+    <string name="login_success">Đăng nhập thành công</string>
+    <string name="login_failed">Tên người dùng hoặc mật khẩu không hợp lệ</string>
+    <string name="input_require">Vui lòng nhập tên người dùng hoặc mật khẩu</string>
+    <string name="register_success">Đăng ký thành công</string>
+    <string name="username_existed">Tên người dùng đã tồn tại</string>
+    <string name="password_not_match">Mật khẩu không khớp</string>
+    <string name="change_password_success">Đổi mật khẩu thành công</string>
+    <string name="server_error">Lỗi máy chủ</string>
+    <string name="cloud">Kho lưu trữ</string>
+    <string name="cloud_storage">Kho lưu trữ</string>
+    <string name="change_language">Ngôn ngữ</string>
+    <string name="confirm_delete_fav_book_title">Xóa khỏi yêu thích</string>
+    <string name="confirm_delete_fav_book_text">Bạn có chắc chắn muốn xóa cuốn sách này khỏi danh sách yêu thích?</string>
+    <string name="add_to_favorite">Thêm vào mục yêu thích</string>
+    <string name="added_to_favorite">Đã thêm vào mục yêu thích</string>
+    <string name="delete_book">Xóa</string>
+    <string name="no_internet">Không có kết nối Internet</string>
+    <string name="dialog_title">Tùy chọn</string>
+    <string name="upload">Tải lên</string>
+    <string name="upload_to_cloud">Tải lên đám mây</string>
+    <string name="title_favorite">Mục yêu thích</string>
+    <string name="upload_success">Tải lên thành công</string>
+    <string name="upload_fail">Tải lên thất bại</string>
+    <string name="delete_complete">Xóa hoàn tất</string>
+    <string name="download_failed">Tải xuống thất bại</string>
+    <string name="starting_download_book">Bắt đầu tải xuống sách</string>
+    <string name="downloading">Đang tải xuống</string>
+    <string name="already_uploaded_then_update">Sách đã được tải lên, cập nhật tiến trình mới</string>
+    <string name="confirm_delete_book_local_text">Bạn có chắc chắn muốn xóa sách này?</string>
+    <string name="smart_search">T.kiếm thông minh</string>
+    <string name="import_publication_existed_in_database">Sách đã được thêm</string>
+    <string name="reset">Đặt lại</string>
+    <string name="vertical_text">Xoay</string>
+    <string name="scroll">Cuộn</string>
+    <string name="page_margins">Lề trang</string>
+    <string name="theme">Chủ đề</string>
+    <string name="text_color">Màu chữ</string>
+    <string name="font">Phông chữ</string>
+    <string name="font_size">Kích thước chữ</string>
+    <string name="font_weight">Độ đậm phông chữ</string>
+    <string name="text_normalization">Chuẩn hóa văn bản</string>
+    <string name="sync">Lưu t.trình hện tại</string>
+    <string name="summarize">Tóm tắt chương này</string>
+    <string name="sync_success">Tiến trình đã lưu vào đám mây</string>
+    <string name="upload_first">Vui lòng tải sách lên trước khi sử dụng tính năng này</string>
+    <string name="language_key">lang_key</string>
+    <string name="failed_to_change_language">Không thể đổi ngôn ngữ</string>
+    <string name="auto_detect">Auto</string>
+    <string name="Copy">Sao chép</string>
+    <string name="delete_failed">Xóa thất bại</string>
+    <string name="go_to_register">Chuyển tới đăng nhập</string>
+
+</resources>

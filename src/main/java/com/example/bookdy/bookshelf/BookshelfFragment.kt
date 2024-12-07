@@ -1,8 +1,11 @@
 package com.example.bookdy.bookshelf
 
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -95,9 +98,48 @@ class BookshelfFragment : Fragment() {
         }
 
         binding.bookshelfAddBookFab.setOnClickListener {
-            appStoragePickerLauncher.launch("application/epub+zip")
+            //appStoragePickerLauncher.launch("application/epub+zip")
+            //private fun pickFilesFromDevice() {
+            val intent = Intent(Intent.ACTION_OPEN_DOCUMENT).apply {
+                addCategory(Intent.CATEGORY_OPENABLE)
+                putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+                type = "application/epub+zip"
+            }
+            startActivityForResult(intent, REQ_CODE_EPUB)
         }
     }
+
+
+    override fun onActivityResult(
+        requestCode: Int, resultCode: Int,
+        resultData: Intent?
+    ) {
+        super.onActivityResult(requestCode, resultCode, resultData)
+
+        if (requestCode == REQ_CODE_EPUB && resultCode == Activity.RESULT_OK) {
+            // Check if multiple files were selected
+            val clipData = resultData?.clipData
+            if (clipData != null) {
+                for (i in 0 until clipData.itemCount) {
+                    val uri = clipData.getItemAt(i).uri
+                    // Use the uri
+                    Log.d("Readiumxxx", "Result URI multi " + uri)
+                    app.bookshelf.importPublicationFromStorage(uri)
+                }
+            } else {
+                // If only one file was selected, handle it here
+                val uri = resultData?.data
+                // Use the uri
+                Log.e("Readiumxxx", "Result URI one " + uri)
+                if (uri != null) app.bookshelf.importPublicationFromStorage(uri)
+            }
+        }
+    }
+
+    companion object {
+        const val REQ_CODE_EPUB = 1
+    }
+
 
     private fun handleEvent(event: BookshelfViewModel.Event) {
         when (event) {

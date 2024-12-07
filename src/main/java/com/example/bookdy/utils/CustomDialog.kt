@@ -2,6 +2,8 @@ package com.example.bookdy.utils
 
 import android.content.Context
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -52,7 +54,7 @@ class CustomDialog(
         val uploadButton: TextView = view.findViewById(R.id.upload)
         val dividerUpload: MaterialDivider = view.findViewById(R.id.dvdUpload)
         Log.d("Readiumxxx", "book.sync is ${book.isSync}")
-        if (book.isSync == 0 && isLogin) {
+        if (isLogin) {
             uploadButton.visibility = View.VISIBLE
             dividerUpload.visibility = View.VISIBLE
         } else {
@@ -62,6 +64,9 @@ class CustomDialog(
 
         favButton.setOnClickListener {
             bookshelfViewModel.markFavorite(book, ADD_TO_FAVORITE)
+            Handler(Looper.getMainLooper()).post{
+                Toast.makeText(requireContext(), R.string.added_to_favorite, Toast.LENGTH_SHORT).show()
+            }
             dismiss()
         }
 
@@ -83,6 +88,7 @@ class CustomDialog(
         uploadButton.setOnClickListener {
             if (bookshelfViewModel.networkStatus) {
                 bookshelfViewModel.doUploadBook(book)
+                bookshelfViewModel.markSync(book, BookshelfViewModel.SYNC_ED)
                 dismiss()
             } else {
                 bookshelfViewModel.showNetworkStatus()

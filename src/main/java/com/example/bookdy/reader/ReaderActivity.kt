@@ -1,5 +1,7 @@
 package com.example.bookdy.reader
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Build
 import android.os.Bundle
 import android.view.MenuItem
@@ -17,8 +19,9 @@ import com.example.bookdy.R
 import com.example.bookdy.databinding.ActivityReaderBinding
 import com.example.bookdy.outline.OutlineContract
 import com.example.bookdy.outline.OutlineFragment
+import java.util.Locale
 
-open class ReaderActivity : AppCompatActivity() {
+class ReaderActivity : AppCompatActivity() {
 
     private val model: ReaderViewModel by viewModels()
 
@@ -30,6 +33,27 @@ open class ReaderActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityReaderBinding
     private lateinit var readerFragment: BaseReaderFragment
+
+//    init {
+//        val sharedPref = application.applicationContext.getSharedPreferences(
+//            "language", Context.MODE_PRIVATE)
+//        val lang = sharedPref.getString(getString(R.string.language_key), "en") ?: "en"
+//        val locale = Locale(lang)
+//        Locale.setDefault(locale)
+//        this.applyOverrideConfiguration(Configuration().also {it.setLocale(locale)})
+//    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val sharedPref = newBase.getSharedPreferences("language", Context.MODE_PRIVATE)
+        val lang = sharedPref.getString("lang_key", "en") ?: "en"
+        val locale = Locale(lang)
+        Locale.setDefault(locale)
+
+        val config = Configuration(newBase.resources.configuration)
+        config.setLocale(locale)
+        val context = newBase.createConfigurationContext(config)
+        super.attachBaseContext(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

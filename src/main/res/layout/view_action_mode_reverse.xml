@@ -26,14 +26,6 @@
                 android:contentDescription="@string/yellow" />
 
             <RadioButton
-                android:id="@+id/green"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/selector_green"
-                android:button="@android:color/transparent"
-                android:contentDescription="@string/green" />
-
-            <RadioButton
                 android:id="@+id/blue"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
@@ -48,14 +40,6 @@
                 android:background="@drawable/selector_red"
                 android:button="@android:color/transparent"
                 android:contentDescription="@string/red" />
-
-            <RadioButton
-                android:id="@+id/purple"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
-                android:background="@drawable/selector_purple"
-                android:button="@android:color/transparent"
-                android:contentDescription="@string/purple" />
 
         </RadioGroup>
 

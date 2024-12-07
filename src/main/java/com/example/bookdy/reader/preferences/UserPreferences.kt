@@ -69,12 +69,10 @@ private fun <P : Configurable.Preferences<P>, E : PreferencesEditor<P>> UserPref
                 .align(Alignment.End),
             horizontalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            PresetsMenuButton(presets = editor.presets, commit = commit, clear = editor::clear)
-
             Button(
                 onClick = { editor.clear(); commit() }
             ) {
-                Text("Reset")
+                Text(stringResource(R.string.reset))
             }
         }
 
@@ -225,16 +223,6 @@ private fun FixedLayoutUserPreferences(
         Divider()
     }
 
-    if (backgroundColor != null) {
-        ColorItem(
-            title = "Background color",
-            preference = backgroundColor,
-            commit = commit
-        )
-
-        Divider()
-    }
-
     if (scroll != null) {
         SwitchItem(
             title = "Scroll",
@@ -334,60 +322,26 @@ private fun ReflowableUserPreferences(
     verticalText: Preference<Boolean>? = null,
     wordSpacing: RangePreference<Double>? = null
 ) {
-    if (language != null || readingProgression != null || verticalText != null) {
-        if (language != null) {
-            LanguageItem(
-                preference = language,
-                commit = commit
-            )
-        }
-
-        if (readingProgression != null) {
-            ButtonGroupItem(
-                title = "Reading progression",
-                preference = readingProgression,
-                commit = commit,
-                formatValue = { it.name }
-            )
-        }
-
-        if (verticalText != null) {
-            SwitchItem(
-                title = "Vertical text",
-                preference = verticalText,
-                commit = commit
-            )
-        }
-
-        Divider()
+    if (verticalText != null) {
+        SwitchItem(
+            title = stringResource(R.string.vertical_text),
+            preference = verticalText,
+            commit = commit
+        )
     }
 
     if (scroll != null || columnCount != null || pageMargins != null) {
         if (scroll != null) {
             SwitchItem(
-                title = "Scroll",
+                title = stringResource(R.string.scroll),
                 preference = scroll,
                 commit = commit
             )
         }
 
-        if (columnCount != null) {
-            ButtonGroupItem(
-                title = "Columns",
-                preference = columnCount,
-                commit = commit
-            ) { value ->
-                when (value) {
-                    ColumnCount.AUTO -> "Auto"
-                    ColumnCount.ONE -> "1"
-                    ColumnCount.TWO -> "2"
-                }
-            }
-        }
-
         if (pageMargins != null) {
             StepperItem(
-                title = "Page margins",
+                title = stringResource(R.string.page_margins),
                 preference = pageMargins,
                 commit = commit
             )
@@ -399,7 +353,7 @@ private fun ReflowableUserPreferences(
     if (theme != null || textColor != null || imageFilter != null) {
         if (theme != null) {
             ButtonGroupItem(
-                title = "Theme",
+                title = stringResource(R.string.theme),
                 preference = theme,
                 commit = commit
             ) { value ->
@@ -411,43 +365,13 @@ private fun ReflowableUserPreferences(
             }
         }
 
-        if (imageFilter != null) {
-            ButtonGroupItem(
-                title = "Image filter",
-                preference = imageFilter,
-                commit = commit
-            ) { value ->
-                when (value) {
-                    ImageFilter.DARKEN -> "Darken"
-                    ImageFilter.INVERT -> "Invert"
-                    null -> "None"
-                }
-            }
-        }
-
-        if (textColor != null) {
-            ColorItem(
-                title = "Text color",
-                preference = textColor,
-                commit = commit
-            )
-        }
-
-        if (backgroundColor != null) {
-            ColorItem(
-                title = "Background color",
-                preference = backgroundColor,
-                commit = commit
-            )
-        }
-
         Divider()
     }
 
     if (fontFamily != null || fontSize != null || textNormalization != null) {
         if (fontFamily != null) {
             MenuItem(
-                title = "Typeface",
+                title = stringResource(R.string.font),
                 preference = fontFamily
                     .withSupportedValues(
                         null,
@@ -469,7 +393,7 @@ private fun ReflowableUserPreferences(
 
         if (fontSize != null) {
             StepperItem(
-                title = "Font size",
+                title = stringResource(R.string.font_size),
                 preference = fontSize,
                 commit = commit
             )
@@ -477,7 +401,7 @@ private fun ReflowableUserPreferences(
 
         if (fontWeight != null) {
             StepperItem(
-                title = "Font weight",
+                title = stringResource(R.string.font_weight),
                 preference = fontWeight,
                 commit = commit
             )
@@ -485,104 +409,10 @@ private fun ReflowableUserPreferences(
 
         if (textNormalization != null) {
             SwitchItem(
-                title = "Text normalization",
+                title = stringResource(R.string.text_normalization),
                 preference = textNormalization,
                 commit = commit
             )
-        }
-
-        Divider()
-    }
-
-    if (publisherStyles != null) {
-        SwitchItem(
-            title = "Publisher styles",
-            preference = publisherStyles,
-            commit = commit
-        )
-
-        if (!(publisherStyles.value ?: publisherStyles.effectiveValue)) {
-            if (textAlign != null) {
-                ButtonGroupItem(
-                    title = "Alignment",
-                    preference = textAlign,
-                    commit = commit
-                ) { value ->
-                    when (value) {
-                        ReadiumTextAlign.CENTER -> "Center"
-                        ReadiumTextAlign.JUSTIFY -> "Justify"
-                        ReadiumTextAlign.START -> "Start"
-                        ReadiumTextAlign.END -> "End"
-                        ReadiumTextAlign.LEFT -> "Left"
-                        ReadiumTextAlign.RIGHT -> "Right"
-                        null -> "Default"
-                    }
-                }
-            }
-
-            if (typeScale != null) {
-                StepperItem(
-                    title = "Type scale",
-                    preference = typeScale,
-                    commit = commit
-                )
-            }
-
-            if (lineHeight != null) {
-                StepperItem(
-                    title = "Line height",
-                    preference = lineHeight,
-                    commit = commit
-                )
-            }
-
-            if (paragraphIndent != null) {
-                StepperItem(
-                    title = "Paragraph indent",
-                    preference = paragraphIndent,
-                    commit = commit
-                )
-            }
-
-            if (paragraphSpacing != null) {
-                StepperItem(
-                    title = "Paragraph spacing",
-                    preference = paragraphSpacing,
-                    commit = commit
-                )
-            }
-
-            if (wordSpacing != null) {
-                StepperItem(
-                    title = "Word spacing",
-                    preference = wordSpacing,
-                    commit = commit
-                )
-            }
-
-            if (letterSpacing != null) {
-                StepperItem(
-                    title = "Letter spacing",
-                    preference = letterSpacing,
-                    commit = commit
-                )
-            }
-
-            if (hyphens != null) {
-                SwitchItem(
-                    title = "Hyphens",
-                    preference = hyphens,
-                    commit = commit
-                )
-            }
-
-            if (ligatures != null) {
-                SwitchItem(
-                    title = "Ligatures",
-                    preference = ligatures,
-                    commit = commit
-                )
-            }
         }
     }
 }

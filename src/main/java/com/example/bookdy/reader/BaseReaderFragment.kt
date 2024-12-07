@@ -10,18 +10,26 @@ import androidx.core.view.MenuHost
 import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.example.bookdy.R
 import org.readium.r2.navigator.Navigator
 import org.readium.r2.navigator.preferences.Configurable
 import org.readium.r2.shared.publication.Locator
 import org.readium.r2.shared.publication.Publication
 import com.example.bookdy.reader.preferences.MainPreferencesBottomSheetDialogFragment
+import com.example.bookdy.utils.NetworkListener
 import com.example.bookdy.utils.UserError
+import com.example.bookdy.utils.isLogin
+import kotlinx.coroutines.launch
 
 abstract class BaseReaderFragment : Fragment() {
 
     val readerViewModel: ReaderViewModel by activityViewModels()
     protected val publication: Publication get() = readerViewModel.publication
+
+    private val networkListener: NetworkListener by lazy { NetworkListener() }
 
     protected abstract val navigator: Navigator
 
@@ -47,6 +55,14 @@ abstract class BaseReaderFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                networkListener.checkNetworkAvailability(requireContext()).collect { status ->
+                    readerViewModel.networkStatus = status
+                }
+            }
+        }
+
         val menuHost: MenuHost = requireActivity()
 
         menuHost.addMenuProvider(
@@ -56,6 +72,8 @@ abstract class BaseReaderFragment : Fragment() {
 
                     menu.findItem(R.id.settings).isVisible =
                         navigator is Configurable<*, *>
+                    menu.findItem(R.id.summarize).isVisible = isLogin
+                    menu.findItem(R.id.sync).isVisible = isLogin
                 }
 
                 override fun onMenuItemSelected(menuItem: MenuItem): Boolean {

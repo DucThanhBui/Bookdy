@@ -3,6 +3,10 @@
 package com.example.bookdy.reader
 
 import android.graphics.Color
+import android.os.Handler
+import android.os.Looper
+import android.util.Log
+import android.widget.Toast
 import androidx.annotation.ColorInt
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -35,9 +39,16 @@ import org.readium.r2.shared.util.Url
 import org.readium.r2.shared.util.data.ReadError
 import com.example.bookdy.Application
 import com.example.bookdy.R
+import com.example.bookdy.bookshelf.BookshelfViewModel.Companion.TAG
 import com.example.bookdy.data.BookRepository
+import com.example.bookdy.data.model.Book
 import com.example.bookdy.data.model.Highlight
+import com.example.bookdy.data.model.HighlightConverters
+import com.example.bookdy.data.modeljson.BookJson
+import com.example.bookdy.data.modeljson.BookmarkJson
+import com.example.bookdy.data.modeljson.HighlightJson
 import com.example.bookdy.domain.toUserError
+import com.example.bookdy.network.BookApiService
 import com.example.bookdy.reader.preferences.UserPreferencesViewModel
 import com.example.bookdy.reader.tts.TtsViewModel
 import com.example.bookdy.search.SearchPagingSource
@@ -45,10 +56,14 @@ import com.example.bookdy.utils.EventChannel
 import com.example.bookdy.utils.UserError
 import com.example.bookdy.utils.createViewModelFactory
 import com.example.bookdy.utils.extensions.toHtml
+import com.example.bookdy.utils.global_token
+import kotlinx.coroutines.Dispatchers
+import retrofit2.HttpException
 import timber.log.Timber
 
 @OptIn(ExperimentalReadiumApi::class)
 class ReaderViewModel(
+    private val application: Application,
     private val bookIdf: String,
     private val readerRepository: ReaderRepository,
     private val bookRepository: BookRepository
@@ -62,6 +77,8 @@ class ReaderViewModel(
             // Fallbacks on a dummy Publication to avoid crashing the app until the Activity finishes.
             DummyReaderInitData(bookIdf)
         }
+
+    var networkStatus = false
 
     val publication: Publication =
         readerInitData.publication
@@ -111,8 +128,106 @@ class ReaderViewModel(
         }
     }
 
+    fun doSyncProgression() {
+        viewModelScope.launch {
+            val book = bookRepository.get(bookIdf)
+            if (networkStatus) {
+                if (book!!.isSync == 1) {
+                    doSync(book)
+                } else {
+                    Handler(Looper.getMainLooper()).post {
+                        Toast.makeText(application.applicationContext, application.applicationContext.getString(R.string.upload_first), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } else {
+                Handler(Looper.getMainLooper()).post {
+                    Toast.makeText(application.applicationContext, application.applicationContext.getString(R.string.no_internet), Toast.LENGTH_SHORT).show()
+                }
+            }
+        }
+    }
+
     fun deleteBookmark(id: Long) = viewModelScope.launch {
         bookRepository.deleteBookmark(id)
+    }
+    private fun doSync(book: Book) {
+        Log.d(TAG, "doUploadBook")
+        viewModelScope.launch(Dispatchers.IO) {
+            val bookmarks = bookRepository.bookmarksDirectlyForBook(book.identifier)
+            Log.d(TAG, "bookmarks collected is $bookmarks")
+            val hls = bookRepository.highlightsDirectlyForBook(book.identifier)
+            Log.d(TAG, "highlights collected is $hls")
+
+            val bookmarksJson = mutableListOf<BookmarkJson>()
+            val highlightsJson = mutableListOf<HighlightJson>()
+            bookmarks.forEach {
+                Log.e(TAG, "boomark loc: " + it.location)
+                val bmJson = BookmarkJson(
+                    creation = it.creation,
+                    bookId = it.bookIdf,
+                    resourceIndex = it.resourceIndex,
+                    resourceHref = it.resourceHref,
+                    resourceType = it.resourceType,
+                    resourceTitle = it.resourceTitle,
+                    locatorText = it.locatorText,
+                    location = it.location
+                )
+                Log.e(TAG, "bmjson loc is ${bmJson.location}")
+                Log.e(TAG, "bookmarkJson add to list is $bmJson")
+                bookmarksJson.add(bmJson)
+            }
+            val hlconverter = HighlightConverters()
+            hls.forEach {
+                val location = hlconverter.locationsToString(it.locations)
+                Log.e(TAG, "hightlight loc: $location")
+                val hlJson = HighlightJson(
+                    bookId = it.bookIdf,
+                    tint = it.tint,
+                    href = it.href,
+                    type = it.type,
+                    title = it.title,
+                    totalProgression = it.totalProgression.toString(),
+                    annotation = it.annotation,
+                    text = hlconverter.textToString(it.text),
+                    location = location
+                )
+                Log.e(TAG, "hlJson add to list is $hlJson")
+                highlightsJson.add(hlJson)
+            }
+            val bookInfo = BookJson(
+                creation = book.creation!!,
+                filename = book.title,
+                identifier = book.identifier,
+                author = book.author,
+                progression = book.progression,
+                rawMediaType = book.rawMediaType,
+                bookmarks = bookmarksJson,
+                highlights = highlightsJson
+            )
+            Log.d("Readiumxxx", "dat/a ready")
+            try {
+                val response =  BookApiService.retrofitService.updateFileInfo(global_token, bookInfo)
+                Handler(Looper.getMainLooper()).post {
+                    if (response.status == -1) {
+                        Toast.makeText(application.applicationContext, application.applicationContext.getString(R.string.server_error), Toast.LENGTH_SHORT).show()
+                    } else {
+                        Toast.makeText(application.applicationContext, application.applicationContext.getString(R.string.sync_success), Toast.LENGTH_SHORT).show()
+                    }
+                }
+            } catch (e: Exception) {
+                if (e is HttpException) {
+                    Handler(Looper.getMainLooper()).post {
+                            Toast.makeText(
+                                application.applicationContext,
+                                application.applicationContext.getString(R.string.server_error),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                } else {
+                    Log.e(TAG, "Exception: ${e.message}")
+                }
+            }
+        }
     }
 
     // Highlights
@@ -317,6 +432,7 @@ class ReaderViewModel(
         fun createFactory(application: Application, arguments: ReaderActivityContract.Arguments) =
             createViewModelFactory {
                 ReaderViewModel(
+                    application,
                     arguments.bookIdf,
                     application.readerRepository,
                     application.bookRepository

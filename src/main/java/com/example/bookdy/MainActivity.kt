@@ -1,5 +1,7 @@
 package com.example.bookdy
 
+import android.content.Context
+import android.content.res.Configuration
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
@@ -10,11 +12,33 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var navController: NavController
     private val viewModel: MainViewModel by viewModels()
+
+//    init {
+//        val sharedPref = applicationContext.getSharedPreferences(
+//            "language", Context.MODE_PRIVATE)
+//        val lang = sharedPref.getString(getString(R.string.language_key), "en") ?: "en"
+//        val locale = Locale(lang)
+//        Locale.setDefault(locale)
+//        this.applyOverrideConfiguration(Configuration().also {it.setLocale(locale)})
+//    }
+
+    override fun attachBaseContext(newBase: Context) {
+        val sharedPref = newBase.getSharedPreferences("language", Context.MODE_PRIVATE)
+        val lang = sharedPref.getString("lang_key", "en") ?: "en"
+        val locale = Locale(lang)
+        Locale.setDefault(locale)
+
+        val config = Configuration(newBase.resources.configuration)
+        config.setLocale(locale)
+        val context = newBase.createConfigurationContext(config)
+        super.attachBaseContext(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

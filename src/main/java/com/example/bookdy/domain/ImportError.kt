@@ -32,10 +32,14 @@ sealed class ImportError(
     class Database(override val cause: Error) :
         ImportError(cause)
 
+    class ExistedInDatabase(override val cause: Error) :
+        ImportError(cause)
+
     class InconsistentState(override val cause: DebugError) :
         ImportError(cause)
 
     fun toUserError(): UserError = when (this) {
+        is ExistedInDatabase -> UserError(R.string.import_publication_existed_in_database, cause = this)
         is Database -> UserError(R.string.import_publication_unable_add_pub_database, cause = this)
         is Download -> UserError(R.string.import_publication_download_failed, cause = this)
         is Publication -> cause.toUserError()

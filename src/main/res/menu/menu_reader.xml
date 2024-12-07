@@ -15,6 +15,21 @@
         app:showAsAction="collapseActionView|always" />
 
     <item
+        android:id="@+id/summarize"
+        android:icon="@drawable/baseline_library_books_24"
+        android:title="@string/summarize"
+        android:visible="false"
+        app:showAsAction="ifRoom"
+        tools:ignore="MenuItemXMLLint" />
+
+    <item
+        android:id="@+id/sync"
+        android:icon="@drawable/baseline_cloud_upload_24"
+        android:title="@string/sync"
+        android:visible="false"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:id="@+id/tts"
         android:icon="@drawable/ic_baseline_headphones_24"
         android:title="@string/epubactivity_read_aloud_start"
@@ -35,7 +50,7 @@
         android:icon="@drawable/ic_outline_format_size_24"
         android:visible="false"
         android:title="@string/epubactivity_settings"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         tools:ignore="AlwaysShowAction"/>
 
     <item
@@ -44,5 +59,4 @@
         android:title="@string/epubactivity_book_nav_options"
         app:showAsAction="always"
         tools:ignore="AlwaysShowAction"/>
-
 </menu>

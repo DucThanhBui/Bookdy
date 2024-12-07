@@ -7,8 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 import java.util.concurrent.TimeUnit
 
 object BookApiService {
-    const val BASE_URL = "http://192.168.0.11:8000/"
-    //const val BASE_URL = "http://192.168.15.89:8000/"
+//    const val BASE_URL = "http://192.168.0.11:8000/"
+    const val BASE_URL = "http://192.168.220.89:8000/"
 
     private val gsonConverterFactory = GsonConverterFactory.create()
 

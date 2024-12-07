@@ -46,6 +46,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.example.bookdy.R
+import com.example.bookdy.data.model.Book
 import kotlin.time.Duration.Companion.seconds
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.filterNotNull
@@ -71,15 +72,21 @@ import com.example.bookdy.network.BookApiService
 import com.example.bookdy.reader.tts.TtsControls
 import com.example.bookdy.reader.tts.TtsPreferencesBottomSheetDialogFragment
 import com.example.bookdy.reader.tts.TtsViewModel
+import com.example.bookdy.utils.CustomDialog
+import com.example.bookdy.utils.CustomTranslateDialog
 import com.example.bookdy.utils.clearPadding
 import com.example.bookdy.utils.extensions.confirmDialog
 import com.example.bookdy.utils.extensions.throttleLatest
 import com.example.bookdy.utils.hideSystemUi
+import com.example.bookdy.utils.isLogin
 import com.example.bookdy.utils.observeWhenStarted
 import com.example.bookdy.utils.padSystemUi
 import com.example.bookdy.utils.showSystemUi
 import com.example.bookdy.utils.toggleSystemUi
 import com.example.bookdy.utils.viewLifecycle
+import org.readium.r2.navigator.epub.EpubNavigatorFragment
+import retrofit2.HttpException
+import java.util.Locale
 
 @OptIn(ExperimentalReadiumApi::class)
 abstract class VisualReaderFragment : BaseReaderFragment() {
@@ -164,6 +171,14 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
                     when (menuItem.itemId) {
                         R.id.tts -> {
                             checkNotNull(readerViewModel.tts).start(navigator)
+                            return true
+                        }
+                        R.id.sync -> {
+                            readerViewModel.doSyncProgression()
+                            return true
+                        }
+                        R.id.summarize -> {
+                            doSummarize()
                             return true
                         }
                     }
@@ -360,9 +375,10 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
             mode.menuInflater.inflate(R.menu.menu_action_mode, menu)
             if (navigator is DecorableNavigator) {
                 menu.findItem(R.id.highlight).isVisible = true
-                menu.findItem(R.id.translate).isVisible = true
+                menu.findItem(R.id.translate).isVisible = isLogin
                 menu.findItem(R.id.note).isVisible = true
-                menu.findItem(R.id.smart_search).isVisible = true
+                menu.findItem(R.id.smart_search).isVisible = isLogin
+                menu.findItem(R.id.copy).isVisible = true
             }
             return true
         }
@@ -373,6 +389,7 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
                 R.id.translate -> showTranslateDialog()
                 R.id.note -> showAnnotationPopup()
                 R.id.smart_search -> showSmartSearchDialog()
+                R.id.copy -> copyToClipboard()
                 else -> return false
             }
 
@@ -381,34 +398,68 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
         }
     }
 
+    private fun copyToClipboard() {
+        lifecycleScope.launch {
+            val input = (navigator as? SelectableNavigator)?.currentSelection()?.locator?.text?.highlight ?: ""
+            val clipboard =
+                requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
+            val clipData = android.content.ClipData.newPlainText("translate", input)
+            clipboard.setPrimaryClip(clipData)
+        }
+    }
+
+    private fun doSummarize() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val chapterName = (navigator as? EpubNavigatorFragment)?.currentLocator?.value?.title ?: ""
+                Log.e("Readiumxxx", "call summary with chapter: $chapterName")
+                val response = BookApiService.retrofitService.getSummarize(publication.metadata.identifier ?: "", chapterName)
+                if (response.status == -1) {
+                    Toast.makeText(requireContext(), requireContext().getString(R.string.upload_first), Toast.LENGTH_SHORT).show()
+                } else {
+                    showFootnotePopup(response.message)
+                }
+            } catch (e: Exception) {
+                if (e is HttpException) Toast.makeText(requireContext(), getString(R.string.server_error), Toast.LENGTH_SHORT).show()
+                Log.e("Readiumxxx", "Exception: ${e.message}")
+            }
+        }
+    }
+
     private fun showSmartSearchDialog() {
         viewLifecycleOwner.lifecycleScope.launch {
-            val input = (navigator as? SelectableNavigator)?.currentSelection()?.locator?.text?.highlight ?: ""
-            Log.e("Readiumxxx", "call search with input: $input")
-            //viewLifecycleOwner.lifecycleScope.launch {
+            try {
+                val input = (navigator as? SelectableNavigator)?.currentSelection()?.locator?.text?.highlight ?: ""
+                Log.e("Readiumxxx", "call search with input: $input")
                 val response = BookApiService.retrofitService.getSearch(publication.metadata.identifier ?: "", input?: "")
                 if (response.status == -1) {
-                    Toast.makeText(requireContext(), "No results found", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), requireContext().getString(R.string.upload_first), Toast.LENGTH_SHORT).show()
                 } else {
                     showFootnotePopup(response.message)
                     Log.e("Readiumxxx", "search results: ${response.message}")
                 }
-           // }
+            } catch (e: Exception) {
+                if (e is HttpException) Toast.makeText(requireContext(), getString(R.string.server_error), Toast.LENGTH_SHORT).show()
+                Log.e("Readiumxxx", "Exception: ${e.message}")
+            }
         }
     }
 
     private fun showTranslateDialog() {
-        viewLifecycleOwner.lifecycleScope.launch {
-            val chapterName = (navigator as? SelectableNavigator)?.currentSelection()?.locator?.title ?: ""
-            Log.e("Readiumxxx", "call summary with chapter: $chapterName")
-            //viewLifecycleOwner.lifecycleScope.launch {
-                val response = BookApiService.retrofitService.getSummarize(publication.metadata.identifier ?: "", chapterName)
-                if (response.status == -1) {
-                    Toast.makeText(requireContext(), "No results found", Toast.LENGTH_SHORT).show()
-                } else {
-                    showFootnotePopup(response.message)
-                }
-            //}
+        val sharedPref = requireActivity().getSharedPreferences("language", Context.MODE_PRIVATE)
+        val langCode = sharedPref.getString("lang_key", "en") ?: "en"
+        val lang = Locale(langCode).displayName
+        lifecycleScope.launch {
+            showDialog(getString(R.string.auto_detect), lang)
+        }
+    }
+
+    private suspend fun showDialog(src: String, des: String) {
+        (navigator as? SelectableNavigator)?.currentSelection()?.locator?.text?.let {
+            CustomTranslateDialog(
+                src, des, it.highlight, it.before ?: "", it.after ?: "", readerViewModel, viewLifecycleOwner.lifecycleScope
+            )
+                .show(parentFragmentManager, "CustomDialog")
         }
     }
 
@@ -467,10 +518,8 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
                 }
 
                 findViewById<View>(R.id.red).setOnClickListener(::selectTint)
-                findViewById<View>(R.id.green).setOnClickListener(::selectTint)
                 findViewById<View>(R.id.blue).setOnClickListener(::selectTint)
                 findViewById<View>(R.id.yellow).setOnClickListener(::selectTint)
-                findViewById<View>(R.id.purple).setOnClickListener(::selectTint)
 
                 findViewById<View>(R.id.annotation).setOnClickListener {
                     popupWindow?.dismiss()
@@ -536,10 +585,6 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
                 val highlight = highlightId?.let { readerViewModel.highlightById(it) }
                 if (highlight != null) {
                     note.setText(highlight.annotation)
-                    findViewById<View>(R.id.sidemark).setBackgroundColor(highlight.tint)
-                    findViewById<TextView>(R.id.select_text).text =
-                        highlight.locator.text.highlight
-
                     findViewById<TextView>(R.id.positive).setOnClickListener {
                         val text = note.text.toString()
                         readerViewModel.updateHighlightAnnotation(highlight.id, annotation = text)
@@ -547,13 +592,10 @@ abstract class VisualReaderFragment : BaseReaderFragment() {
                     }
                 } else {
                     val tint = highlightTints.values.random()
-                    findViewById<View>(R.id.sidemark).setBackgroundColor(tint)
                     val navigator =
                         navigator as? SelectableNavigator ?: return@launch
                     val selection = navigator.currentSelection() ?: return@launch
                     navigator.clearSelection()
-                    findViewById<TextView>(R.id.select_text).text =
-                        selection.locator.text.highlight
 
                     findViewById<TextView>(R.id.positive).setOnClickListener {
                         readerViewModel.addHighlight(

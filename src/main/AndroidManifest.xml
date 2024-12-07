@@ -18,7 +18,7 @@
     <application
         android:name="com.example.bookdy.Application"
         android:icon="@drawable/ic_android_black_24dp"
-        android:label="Book Reader"
+        android:label="Bookdy"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
 

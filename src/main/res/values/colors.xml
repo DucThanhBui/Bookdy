@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="lang_selected">#011BAC</color>
+    <color name="lang_unselected">#000000</color>
+</resources>
