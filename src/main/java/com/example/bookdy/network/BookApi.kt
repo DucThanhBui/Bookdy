@@ -64,7 +64,7 @@ interface BookApi {
     suspend fun getFile(
         @Header("Authorization") token: String,
         @Query("identifier") identifier: String
-    ): ResponseMessage
+    ): BookJson
 
     @PATCH("/update-file")
     suspend fun updateFileInfo(

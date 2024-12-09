@@ -257,9 +257,9 @@
     <string name="upload_first">Vui lòng tải sách lên trước khi sử dụng tính năng này</string>
     <string name="language_key">lang_key</string>
     <string name="failed_to_change_language">Không thể đổi ngôn ngữ</string>
-    <string name="auto_detect">Auto</string>
+    <string name="auto_detect">Tự động n.dạng</string>
     <string name="Copy">Sao chép</string>
     <string name="delete_failed">Xóa thất bại</string>
     <string name="go_to_register">Chuyển tới đăng nhập</string>
-
+    <string name="fetch_from_cloud">Đồng bộ tiến trình đọc</string>
 </resources>

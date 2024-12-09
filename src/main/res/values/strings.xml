@@ -259,8 +259,9 @@
     <string name="upload_first">Please upload first</string>
     <string name="language_key">lang_key</string>
     <string name="failed_to_change_language">Failed to change language</string>
-    <string name="auto_detect">Auto</string>
+    <string name="auto_detect">Auto Detect</string>
     <string name="Copy">Copy</string>
     <string name="delete_failed">Delete fail</string>
     <string name="go_to_register">Go to Register</string>
+    <string name="fetch_from_cloud">Sync with cloud progression</string>
 </resources>

@@ -40,6 +40,11 @@ interface BooksDao {
     fun getHighlightsForBook(bookIdf: String): Flow<List<Highlight>>
 
     @Query(
+        "DELETE FROM ${Highlight.TABLE_NAME} WHERE ${Highlight.BOOK_IDF} = :bookIdf"
+    )
+    suspend fun deleteHighlightsForBook(bookIdf: String)
+
+    @Query(
         "SELECT * FROM ${Highlight.TABLE_NAME} WHERE ${Highlight.BOOK_IDF} = :bookIdf ORDER BY ${Highlight.TOTAL_PROGRESSION} ASC"
     )
     suspend fun getHighlightsDirectlyForBook(bookIdf: String): List<Highlight>
@@ -65,6 +70,9 @@ interface BooksDao {
 
     @Query("DELETE FROM " + Bookmark.TABLE_NAME + " WHERE " + Bookmark.ID + " = :id")
     suspend fun deleteBookmark(id: Long)
+
+    @Query("DELETE FROM " + Bookmark.TABLE_NAME + " WHERE " + Bookmark.BOOK_IDF + " = :idf")
+    suspend fun deleteAllBookmarksForBook(idf: String)
 
     @Query("DELETE FROM ${Highlight.TABLE_NAME} WHERE ${Highlight.ID} = :id")
     suspend fun deleteHighlight(id: Long)

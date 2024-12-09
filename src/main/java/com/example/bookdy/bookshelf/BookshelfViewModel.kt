@@ -42,6 +42,8 @@ import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
+import org.readium.r2.shared.publication.Locator
+import org.readium.r2.shared.util.Url
 import java.io.File
 import java.net.SocketTimeoutException
 
@@ -248,6 +250,53 @@ class BookshelfViewModel(application: Application) : AndroidViewModel(applicatio
                 }
             }
 
+        }
+    }
+
+    fun doFetchBook(book: Book) {
+        viewModelScope.launch {
+            try {
+                app.bookRepository.booksDao.deleteAllBookmarksForBook(book.identifier)
+                app.bookRepository.booksDao.deleteHighlightsForBook(book.identifier)
+                val book = BookApiService.retrofitService.getFile(token = global_token, book.identifier)
+                val bookmarks = book.bookmarks
+                Log.e("Readiumxxx", "bookmarks size is ${bookmarks.size}")
+                bookmarks.forEach {
+                    val bookmark = Bookmark(
+                        creation = it.creation,
+                        bookIdf = it.bookId,
+                        resourceIndex = it.resourceIndex,
+                        resourceHref = it.resourceHref,
+                        resourceType = it.resourceType,
+                        resourceTitle = it.resourceTitle,
+                        location = it.location,
+                        locatorText = it.locatorText
+                    )
+                    app.bookRepository.booksDao.insertBookmark(bookmark)
+                }
+                val highlights = book.highlights
+                val highlightConverters = HighlightConverters()
+                Log.e("Readiumxxx", "highlights size is ${highlights.size}")
+                highlights.forEach {
+                    val locator = Locator(
+                        href = Url(it.href)!!,
+                        mediaType = org.readium.r2.shared.util.mediatype.MediaType(it.type)
+                            ?: org.readium.r2.shared.util.mediatype.MediaType.BINARY,
+                        title = it.title,
+                        locations = highlightConverters.locationsFromString(it.location),
+                        text = highlightConverters.textFromString(it.text)
+                    )
+                    val highlight = Highlight(
+                        bookIdf = it.bookId,
+                        tint = it.tint,
+                        locator = locator,
+                        annotation = it.annotation
+                    )
+                    app.bookRepository.booksDao.insertHighlight(highlight)
+                }
+            } catch (e: Exception) {
+                Log.e("Readiumxxx", "error: $e")
+            }
         }
     }
 

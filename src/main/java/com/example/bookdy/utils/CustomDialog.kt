@@ -62,6 +62,16 @@ class CustomDialog(
             dividerUpload.visibility = View.GONE
         }
 
+        val fetchButton: TextView = view.findViewById(R.id.fetch)
+        val dividerfetch: MaterialDivider = view.findViewById(R.id.dvdFetch)
+        if (isLogin) {
+            fetchButton.visibility = View.VISIBLE
+            dividerfetch.visibility = View.VISIBLE
+        } else {
+            fetchButton.visibility = View.GONE
+            dividerfetch.visibility = View.GONE
+        }
+
         favButton.setOnClickListener {
             bookshelfViewModel.markFavorite(book, ADD_TO_FAVORITE)
             Handler(Looper.getMainLooper()).post{
@@ -89,6 +99,16 @@ class CustomDialog(
             if (bookshelfViewModel.networkStatus) {
                 bookshelfViewModel.doUploadBook(book)
                 bookshelfViewModel.markSync(book, BookshelfViewModel.SYNC_ED)
+                dismiss()
+            } else {
+                bookshelfViewModel.showNetworkStatus()
+                dismiss()
+            }
+        }
+
+        fetchButton.setOnClickListener {
+            if (bookshelfViewModel.networkStatus) {
+                bookshelfViewModel.doFetchBook(book)
                 dismiss()
             } else {
                 bookshelfViewModel.showNetworkStatus()

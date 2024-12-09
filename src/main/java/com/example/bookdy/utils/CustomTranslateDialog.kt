@@ -1,6 +1,8 @@
 package com.example.bookdy.utils
 
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -19,6 +21,8 @@ import com.example.bookdy.reader.ReaderViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
+import java.util.Locale
+
 
 class CustomTranslateDialog(
     private val src: String,
@@ -46,6 +50,37 @@ class CustomTranslateDialog(
         tvSrcTitle.text = src
         tvDesTitle.text = des
 
+        val listAllLanguage = mutableListOf<String>()
+        Locale.getAvailableLocales().forEach {
+            listAllLanguage.add(it.displayName)
+        }
+
+        tvDesLang.setOnClickListener {
+            val b = AlertDialog.Builder(requireContext())
+            b.setTitle("Example")
+            val types = listAllLanguage.toTypedArray()
+            b.setItems(types) { dialog, which ->
+                dialog.dismiss()
+                val selected = types[which]
+                tvDesLang.text = selected
+                tvDesTitle.text = selected
+            }
+            b.show()
+        }
+
+        tvSourceLang.setOnClickListener {
+            val b = AlertDialog.Builder(requireContext())
+            b.setTitle("Example")
+            val types = listAllLanguage.apply { add(0, requireContext().getString(R.string.auto_detect)) }.toTypedArray()
+            b.setItems(types) { dialog, which ->
+                dialog.dismiss()
+                val selected = types[which]
+                tvSourceLang.text = selected
+                tvSrcTitle.text = selected
+            }
+            b.show()
+        }
+
         val sourceText = view.findViewById<TextView>(R.id.tvSrc)
         sourceText.text = text
         val desText = view.findViewById<TextView>(R.id.tvDes)
@@ -62,7 +97,7 @@ class CustomTranslateDialog(
             tvDesTitle.text = tmp2
 
             sourceText.text = desText.text
-            doTranslate(sourceText.text as String?, before, after, src, des, desText)
+            //doTranslate(sourceText.text as String?, before, after, src, des, desText)
         }
 
         val btCopy = view.findViewById<Button>(R.id.copyButton)
@@ -71,6 +106,13 @@ class CustomTranslateDialog(
                 requireContext().getSystemService(Context.CLIPBOARD_SERVICE) as android.content.ClipboardManager
             val clipData = android.content.ClipData.newPlainText("translate", desText.text)
             clipboard.setPrimaryClip(clipData)
+        }
+
+        val btTranslate = view.findViewById<Button>(R.id.btTranslate)
+
+        btTranslate.setOnClickListener {
+            doTranslate(sourceText.text as String?, before, after,
+                tvSourceLang.text as String, tvDesLang.text as String, desText)
         }
 
         dialog?.setCancelable(true)

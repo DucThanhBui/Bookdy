@@ -46,7 +46,7 @@ data class Highlight(
     @ColumnInfo(name = TYPE)
     var type: String,
     @ColumnInfo(name = TITLE, defaultValue = "NULL")
-    var title: String? = null,
+    var title: String? = "",
     @ColumnInfo(name = TOTAL_PROGRESSION, defaultValue = "0")
     var totalProgression: Double = 0.0,
     @ColumnInfo(name = LOCATIONS, defaultValue = "{}")
@@ -68,7 +68,7 @@ data class Highlight(
             tint = tint,
             href = locator.href.toString(),
             type = locator.mediaType.toString(),
-            title = locator.title,
+            title = locator.title ?: "",
             totalProgression = locator.locations.totalProgression ?: 0.0,
             locations = locator.locations,
             text = locator.text,
@@ -102,7 +102,7 @@ data class Highlight(
     val locator: Locator get() = Locator(
         href = Url(href)!!,
         mediaType = MediaType(type) ?: MediaType.BINARY,
-        title = title,
+        title = title ?: "",
         locations = locations,
         text = text
     )
